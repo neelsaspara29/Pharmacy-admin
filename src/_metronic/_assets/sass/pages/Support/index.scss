@@ -1,0 +1,26 @@
+
+.main{
+    height: 710px !important;
+    
+}
+.sidebar ,.chat_field{
+    height:80vh;
+    overflow-y: scroll;
+}
+.send_box{
+    position: sticky;
+    bottom: 0;
+    background: white !important;
+}
+.profile{
+    width: 40px;
+height: 40px;
+background-color: black;
+font-size: 20px;
+color: white;
+text-transform: uppercase;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 50%;
+}

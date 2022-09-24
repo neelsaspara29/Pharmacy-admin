@@ -32,8 +32,8 @@ const validationMedicineData = (obj) => {
     if (!marginD)
       return {res:"Margin Discount Is Required or Non Zero",state:3};
     
-    let Schema = obj.Schema;
-    if (!Schema)
+    let Scheme = obj.Scheme;
+    if (!Scheme)
         return {res:"Schema Value Is Required",state:3};
     
     let { chemicalComposition, hsnCode, category, tags, ShortDesc } = obj;

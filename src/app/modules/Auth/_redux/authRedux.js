@@ -14,6 +14,7 @@ export const actionTypes = {
 const initialAuthState = {
   user: undefined,
   token: undefined,
+  id: undefined
 };
 
 export const reducer = persistReducer(
@@ -22,7 +23,7 @@ export const reducer = persistReducer(
     switch (action.type) {
       case actionTypes.Login: {
         const { token, user } = action.payload;
-        console.log("user ", token.user);
+        console.log("user ", token);
         return { token: token.token, user: token.user };
       }
 

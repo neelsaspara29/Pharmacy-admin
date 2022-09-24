@@ -24,10 +24,8 @@ import { HiOutlineChevronRight } from "react-icons/hi";
 import { ErrorToast, SuccessToast } from "../../../helpers/Toast";
 import NoDataTable from "../../../common/noDataTable";
 import * as XLSX from "xlsx";
-import Retailer_Edit from "./Retailer_Edit.jsx";
+import Axios from "axios";
 // import moment from "moment";
-
-let fstate = ["Pending", "Approve", "Block", "All Data"]
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -59,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Retailer_List() {
+export default function Inventory_List() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState(true);
@@ -73,7 +71,6 @@ export default function Retailer_List() {
   const [open, setOpen] = React.useState(false);
   const [Id, setId] = React.useState();
   const [rowID, setRowID] = React.useState();
-  const [filterState, SetFilterState] = useState(3)
 
   console.log("data", data);
   const deleteUserBtn = async (id) => {
@@ -91,7 +88,7 @@ export default function Retailer_List() {
     //   sort: true,
     // },
     {
-      dataField: "shopName",
+      dataField: "medicine name",
       text: "Name",
       sort: true,
       formatter: (cell, row) => {
@@ -104,7 +101,7 @@ export default function Retailer_List() {
             
             <div>
               <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
-                {row?.shopName}
+                {row?.name}
               </a>
             </div>
           </div>
@@ -115,64 +112,109 @@ export default function Retailer_List() {
       // headerSortingClasses,
     },
     {
-      dataField: "email",
-      text: "Email",
+      dataField: "In Stock",
+      text: "In Stock",
       sort: true,
-    },
-    {
-      dataField: "phoneNumber",
-      text: "phone number",
-      sort: true,
-      
-    },
-    {
-      dataField: "status",
-      text: "STATUS",
-      sort: true,
-      formatter: (cell, row) => {
-        console.log("status", row.status)
-        if (row.status == 0) {
-          return <div className="text-primary">Pending</div>;
-        } else if (row.status == 1) {
-          return <div className="text-success">Approve</div>;
-        } else {
-          return <div className="text-danger">Block</div>;
-        }
-      },
-    },
-    {
-      dataField: "Joining date",
-      text: "joining date",
-      sort: true,
-      formatter: (cell, row) => {
+      formatter:(cell, row) => {
         return (
-          <div>{moment(row.createdAt).format('L')}</div>
+            <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.stocks}
+              </a>
+            </div>
+          </div>
         )
       }
     },
     {
-      dataField: "action",
-      text: "action",
+      dataField: "mrp",
+      text: "mrp",
       sort: true,
-      formatter: (cell, row) => {
+      formatter:(cell, row) => {
         return (
-          <div className="d-flex align-items-center">
-            <div clas sName="symbol symbol-50 symbol-light">
-              <a
-                title="Edit customer"
-                className="btn  btn-primary btn-hover-danger btn-sm me-3"
-                onClick={() => click(row)}
-              >
-                <span className="svg-icon svg-icon-md svg-icon-primary">
-                  View
-                </span>
+            <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.mrp}
               </a>
-              
             </div>
           </div>
         )
-      },
+      }
     },
+    {
+      dataField: "ptr",
+      text: "ptr",
+      sort: true,
+      formatter:(cell, row) => {
+        return (
+            <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.ptr}
+              </a>
+            </div>
+          </div>
+        )
+      }
+    },
+    {
+      dataField: "scheme",
+      text: "scheme",
+      sort: true,
+      formatter:(cell, row) => {
+        return (
+            <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.Scheme}
+              </a>
+            </div>
+          </div>
+        )
+      }
+    },
+    {
+      dataField: "gst",
+      text: "gst",
+      sort: true,
+      formatter:(cell, row) => {
+        return (
+            <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                5%
+              </a>
+            </div>
+          </div>
+        )
+      }
+    },
+    
+    
+    
+    
 
     // {
     //   dataField: "postCount",
@@ -212,6 +254,7 @@ export default function Retailer_List() {
         
         console.log("data neel", data)
         resolve(data);
+
       };
 
       fileReader.onerror = (error) => {
@@ -220,10 +263,12 @@ export default function Retailer_List() {
     });
 
     promise.then(async (d) => {
+      let body = {
+        data: d
+      }
       // setItems(d);
       console.log("data", d)
-      let body = {data : d}
-      await ApiPost("/retailers/bulk/add", body)
+      await ApiPost("/inventory/update", body)
       .then((res) => {
         console.log(res)
     fetchData(currentpage, pagesize, searching);
@@ -239,8 +284,29 @@ export default function Retailer_List() {
       .catch(async (err) => {
         ErrorToast(err?.message);
       });
+
     });
   };
+
+  const handleGetInventory = async () => {
+    await ApiGet("/inventory/download")
+    .then((res) => {
+      console.log(res.data.data)
+      window.location.href = res.data.data
+      // fetch(res.data.data).then(() => {
+      //   console.log("success")
+      // })
+      // setData(res?.data?.data?.medicinesData);
+      // console.log(res.data.data.retailersData[0].createdAt)
+      // console.log(moment(res.data.data.retailersData[0].createdAt).format('L'))
+      // settotalpage(res?.data?.data?.state?.page_limit);
+      // setcurrentpage(res?.data?.data?.state?.page);
+      // setpagesize(res?.data?.data?.state?.limit);
+    })
+    .catch(async (err) => {
+      ErrorToast(err?.message);
+    });
+  }
 
   const handlesearch = (e) => {
     setsearching(e.target.value);
@@ -253,19 +319,19 @@ export default function Retailer_List() {
     fetchData(i, pagesize, searching);
   };
 
-  const fetchData = async (page, limit, search, status) => {
+  const fetchData = async (page, limit, search) => {
     let body = {
       limit,
       page,
       search,
-      status: parseInt(status)
     };
 
-    await ApiPost("/retailers/get", body)
+    await ApiPost("/medicine/get", body)
       .then((res) => {
-        setData(res?.data?.data?.retailersData);
-        console.log(res.data.data.retailersData[0].createdAt)
-        console.log(moment(res.data.data.retailersData[0].createdAt).format('L'))
+        console.log(res.data.data)
+        setData(res?.data?.data?.medicinesData);
+        // console.log(res.data.data.retailersData[0].createdAt)
+        // console.log(moment(res.data.data.retailersData[0].createdAt).format('L'))
         settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
@@ -275,23 +341,6 @@ export default function Retailer_List() {
       });
   };
   // console.log("resresresresresresresresresresres", data);
-
-  const handleChangeStatus = (e) => {
-
-    SetFilterState(e)
-    if(e != "3"){
-    fetchData(currentpage, pagesize, searching, e);
-    }else {
-      // console.log(3)
-    fetchData(currentpage, pagesize, searching);
-
-    }
-  }
-
-  const getFomat = () => {
-    window.location.href = "https://healthsarv.s3.ap-south-1.amazonaws.com/add-retailer-data.csv"
-  }
-
   useEffect(() => {
     fetchData(currentpage, pagesize, searching);
   }, []);
@@ -315,7 +364,7 @@ export default function Retailer_List() {
                 </li>
                 <li class="breadcrumb-item">
                   <a class="text-muted" onClick={() => history.push("/users")}>
-                    Retailers
+                    Inventory
                   </a>
                 </li>
               </ul>
@@ -330,45 +379,38 @@ export default function Retailer_List() {
         <div class="card card-custom">
           <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div class="card-title">
-              <h3 class="card-label">Retailers</h3>
+              <h3 class="card-label">Inventory</h3>
             </div>
             <div className="card-toolbar">
 
             <div class="card-toolbar">
               <a
                 class="btn btn-primary font-weight-bolder"
-                onClick={() => setOpen(true)}
+                onClick={handleGetInventory}
               >
-                Add Retailer
+                Get Inventory
               </a>
             </div>
-            <div class="card-toolbar ms-2">
-              <a
-                class="btn btn-primary font-weight-bolder"
-                onClick={getFomat}
-              >
-                Download Format
-              </a>
-            </div>
-            <div class="card-toolbar ms-2">
+            <div  class="card-toolbar ms-2">
              <input
         type="file"
+        id="csvFile"
         // style={{visibility: "hidden"}}
-        id="userFile"
         hidden
         onChange={(e) => {
           const file = e.target.files[0];
           readExcel(file);
         }}
       /> 
-            <label htmlFor="userFile" className="m-0">
+        <label htmlFor="csvFile" className="m-0">
+
               <a
                 class="btn btn-primary font-weight-bolder"
                 // onClick={() => setOpen(true)}
               >
-                Upload Retailer Data
+                Upload Inventory
               </a>
-              </label>
+        </label>
             </div>
             </div>
 
@@ -398,31 +440,7 @@ export default function Retailer_List() {
                         </div>
                       </div>
 
-                        <div className="col-md-3 my-2">
-                        <Dropdown onSelect={handleChangeStatus} >
-                          <Dropdown.Toggle
-                            id="dropdown-basic"
-                            className="text-capitalize"
-                          >
-                            {fstate[filterState]}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu>
-                            <Dropdown.Item eventKey="3">
-                              All Data
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="1">
-                              Approved
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="2">
-                              Block
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="0">
-                              Pending
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </div>
+                       
                     </div>
                   </div>
                 </div>
@@ -480,17 +498,6 @@ export default function Retailer_List() {
               fetchDatas={fetchData}
             />
           )} */}
-          {open && (
-            <Retailer_Edit
-              open={open}
-              setOpen={setOpen}
-              fetchDatas={fetchData}
-              currentpage = {currentpage}
-              pagesize = {pagesize} 
-              searching = {searching}
-
-            />
-          )}
         </div>
       </div>
     </>

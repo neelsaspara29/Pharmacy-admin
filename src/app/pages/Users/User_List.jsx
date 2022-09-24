@@ -7,6 +7,8 @@ import moment from "moment";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import { validationMedicineData } from "../../../_metronic/_helpers/validationHelper";
 import DropdownButton from "react-bootstrap/DropdownButton";
+// const data2 = ["sassasassas","aaaassfsfsf", "dsdsdsdsdsd","cdcdcddccd"];
+
 
 import {
   ApiDelete,
@@ -31,6 +33,7 @@ import NoDataTable from "../../../common/noDataTable";
 import { retry } from "async";
 import { BorderStyle } from "@material-ui/icons";
 import { data } from "jquery";
+import MedicineEdit from "./MedicineEdit";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -61,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
   },
 }));
+
+const mname = ["Premium Medicare","Pharma Art", "Optimum Healthcare", "Quick Health Remedies", "Diligent Health Solutions", "Noble Pharmaceuticals", "Healthy Life Medicare", "Perfect Pharma Solutions", "Wellness Pharma", "Good Health Pharmaceuticals"]
+
 
 export default function User_List() {
   const classes = useStyles();
@@ -102,12 +108,20 @@ export default function User_List() {
   const [gimages, setGimages] = useState([]);
   const [MainData, setMainData] = useState([]);
   const [sorted, setSorted] = useState(0);
+  const [editModal, setEditModal] = useState(false);
+  const [editData, setEditData] = useState([]);
+  const [delet, setDelet] = useState(false);
+  const [deletId, setDeletId] = useState("");
+  const [isPrev, setIsPrev] = useState(false);
+  const [mnameSuggestion, setMnameSuggestion] = useState([])
   
-  const deleteUserBtn = async (id) => {
-    await ApiDelete(`/user/delete_user/${id}`)
+  const deletMedicine = async () => {
+    await ApiDelete(`/medicine/${deletId}`)
       .then((res) => {
+        console.log(res);
         SuccessToast("User has been Successfully Deleted !!!");
         fetchData(1, 10, "");
+        setDelet(!delet);
       })
       .catch((err) => {
         console.log("err_deleteUser", err);
@@ -115,7 +129,7 @@ export default function User_List() {
       });
   };
   const click = (v) => {
-    history.push(`/user_details?id=${v._id}`);
+    // history.push(`/user_details?id=${v._id}`);
   };
   const columns = [
     {
@@ -186,7 +200,7 @@ export default function User_List() {
       sort: true,
       formatter: (cell, row) => {
         
-        return <div>{moment(row.data).format("DD/MM/YYYY")}</div>
+        return <div>{moment(row.createdAt).format("DD/MM/YYYY")}</div>
       },
     },
     {
@@ -200,7 +214,10 @@ export default function User_List() {
               <a
                 title="Edit customer"
                 className="btn btn-icon btn-light btn-hover-primary btn-sm me-3"
-                onClick={() => click(row)}
+                onClick={() => {
+                  setEditModal(!editModal);
+                  setEditData(row)
+                }}
               >
                 <span className="svg-icon svg-icon-md svg-icon-primary">
                   <SVG
@@ -213,7 +230,10 @@ export default function User_List() {
               <a
                 title="Delete customer"
                 className="btn btn-icon btn-light btn-hover-danger btn-sm"
-                onClick={() => deleteUserBtn(row._id)}
+                onClick={() => {
+                  setDelet(!delet);
+                  setDeletId(row._id);
+                }}
               >
                 <span className="svg-icon svg-icon-md svg-icon-danger">
                   <SVG
@@ -237,13 +257,41 @@ export default function User_List() {
   const handleonchnagespagination = (e) => {
     fetchData(1, parseInt(e.target.value), state, searching);
   };
+
+
+  const getSuggestion = (v) => {
+    if(v) {
+
+      const result = mname.filter(item => item.toLowerCase().includes(v) )
+      console.log(result)
+      setMnameSuggestion(result)
+    }else {
+      setMnameSuggestion([])
+    }
+  }
+
+  const onMnameSuggestionClick = (v) => {
+    setAddData((data) => {
+      return { ...data, ["manufacturerName"]: v };
+    });
+    setMnameSuggestion([])
+  }
+
   const handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
+    if(name == "manufacturerName") {
+      getSuggestion(value)
+    }else {
+      setMnameSuggestion([])
+    }
     setAddData((data) => {
       return { ...data, [name]: value };
     });
   };
+  
+
+
   const handleAddMedicineSubmit = async () => {
     let body = addData;
     body.category = catArr;
@@ -251,15 +299,16 @@ export default function User_List() {
     body.mainImage = mainImg;
     body.images = gimages;
     console.log(body);
-    let res = true;
+    let res = validationMedicineData(body);
 
     if (res == true) {
     
       console.log(body);
       await ApiPost("/medicine/add", body).then((res) => {
         console.log(res);
-        // setAddData([...data, body]);
+        
         setModal(!modal);
+        fetchData(1, 10);
       });
     } else {
       ErrorToast(res.res);
@@ -283,7 +332,6 @@ export default function User_List() {
   };
   const imageMainhandle = async (e) => {
     const mainimage = document.getElementById("mainimage");
-    setMainImg(e.target.files[0]);
     const files = e.target.files[0];
     const name = e.target.name;
     if (files) {
@@ -303,7 +351,6 @@ export default function User_List() {
         formData.append("image", file);
         await ApiUpload("upload/profile", formData)
           .then((res) => {
-            BorderStyle.mainImage = "";
             setMainImg(res.data.data.image);
           })
           .catch((err) => console.log("res_blob", err));
@@ -403,41 +450,88 @@ export default function User_List() {
       
     }
    };
+  const hide = () => {
+    setEditModal(!editModal);
+   }
 
   const fetchData = async (page, limit, search) => {
     let body = {
-    //   "search" : "paracitamol" , 
-    // "categories" : ["63132ab19faccdd13d05abe6"],
-    // "priceRange" : { "min" : 30 , "max" : 100 },
-    "page" : 1,
-    "limit" : 10
+      search,
+      page,
+      limit
     };
 
     await ApiPost("/medicine/get",body)
       .then((res) => {
         console.log(res?.data?.data)
         setData(res?.data?.data?.medicinesData);
-        setMainData(res?.data?.data?.medicinesData
-        
-        
-        
-        
-        );
-        // settotalpage(res?.data?.data?.state?.page_limit);
-        // setcurrentpage(res?.data?.data?.state?.page);
-        // setpagesize(res?.data?.data?.state?.limit);
+        setMainData(res?.data?.data?.medicinesData);
+        settotalpage(res?.data?.data?.state?.page_limit);
+        setcurrentpage(res?.data?.data?.state?.page);
+        setpagesize(res?.data?.data?.state?.limit);
       })
       .catch(async (err) => {
         ErrorToast(err?.message);
       });
+    let arr=[{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$1000",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$2000",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$1500",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$500",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$3000",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$10000",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$100",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$369",
+    },{
+      id: "#1",
+      name: "Dolo",
+      stocks: "In Stock",
+      createdAt: "22/01/2022",
+      mrp: "$100000",
+      }]
+    // setData(arr);
+    // setMainData(arr);
     // setData([...data,
-    //   {
-    //     id: "#1",
-    //     name: "Dolo",
-    //     stocks: "In Stock",
-    //     createdAt: "22/01/2022",
-    //     mrp: "$1000",
-    //   },
+      
     // ]);
   };
   const fetchCategory = async () => {
@@ -579,7 +673,7 @@ export default function User_List() {
                 <div className="my-2">
                   <Pagination
                     count={totalpage}
-                    page={currentpage}
+                    page={currentpage} 
                     onChange={handleChange}
                     variant="outlined"
                     shape="rounded"
@@ -606,6 +700,7 @@ export default function User_List() {
           </div>
         </div>
       </div>
+      <div className="modal1">
       <Modal
         show={modal}
         centered
@@ -627,7 +722,7 @@ export default function User_List() {
                   <Form.Label>Medicine Name</Form.Label>
                   <Form.Control
                     type="text"
-                    id="validID"
+                    id="name"
                     label="Medicinename"
                     required
                     name="name"
@@ -665,7 +760,7 @@ export default function User_List() {
                   role="button"
                 >
                   <div id="mainimage" className="fs-10">
-                    Click To Add Image
+                   {isPrev? mainImg?<img src={mainImg} width={160} height={140}/>:"Click To Add Image"  :" Click To Add Image"}
                   </div>
                 </label>
               </div>
@@ -681,7 +776,8 @@ export default function User_List() {
                     className=" d-flex justify-content-center align-items-center"
                     style={{fontSize:'6px !importanat'}}
                   >
-                 Click To Add Image
+                   {isPrev? gimages.length !=0 ? gimages.map((src)=><img src={src} width={160} height={140}/>) :"Click To Add Image"  :" Click To Add Image"}
+
                   </div>
                 </label>
               </div>
@@ -709,12 +805,12 @@ export default function User_List() {
             <div className="form-group row">
               <div class="container">
                 <div class="row justify-content-between">
-                  <div class="col-6">
+                  <div class="col-6" style={{position: "relative"}}>
                     <Form.Group>
                       <Form.Label>Manufacturer Name</Form.Label>
                       <Form.Control
                         type="text"
-                        id="nameID"
+                        id="name"
                         // className={errors["name"] && "chipInputRed"}
                         label="Manufacturer Name"
                         required
@@ -722,6 +818,15 @@ export default function User_List() {
                         onChange={handleChange}
                         value={addData.manufacturerName}
                       />
+                      <div style={{position: "absolute", top: "68px", background:"lightGray", width: "352px", zIndex: "10", borderRadius: "3px"}}>
+                        {mnameSuggestion.map((item) => {
+                          return (
+                            <>
+                              <div style={{padding: "10px", borderBottom: "1px solid gray", cursor: "pointer"}} onClick={() => {onMnameSuggestionClick(item)}}>{item}</div>
+                            </>
+                          )
+                        } )}
+                      </div>
 
                       <span className="errorInput">
                         {/* {data.name?.length > 0 ? "" : errors["name"]} */}
@@ -994,16 +1099,14 @@ export default function User_List() {
                     <Form.Group md="6">
                       <Form.Label>Publish</Form.Label>
                       <Form.Control
-                        type="text"
-                        id="statusID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="Medicine"
-                        required
-                        placeholder="Status"
-                        name="publish"
+                        as="select"
+                        placeholder="select category"
                         onChange={handleChange}
-                        value={addData.publish}
-                      />
+                      >
+                        <option>Select Status</option>
+                          <option value="public">Public</option>
+                          <option value="draft">Draft</option>
+                      </Form.Control>
                     </Form.Group>
                   </div>
                 </div>
@@ -1016,16 +1119,16 @@ export default function User_List() {
             <button
               type="submit"
               onClick={() => {
-                setAddData(addData);
+
                 setModalState(modalState - 1);
-                console.log(addData);
+                setIsPrev(true);
               }}
               // disabled={button}
               className={`btn btn-primary btn-elevate ${
                 modalState == 1 ? "invisible" : "visible"
               }`}
             >
-              Prev
+              PREV
             </button>
             <div>
               <button
@@ -1033,19 +1136,17 @@ export default function User_List() {
                 onClick={() => setModal(!modal)}
                 className="btn btn-light btn-elevate mr-2"
               >
-                Cancel
+                CANCEL
               </button>
 
               {modalState != 4 ? (
                 <button
                   type="submit"
                   onClick={() => {
-                    setAddData(addData);
                     setModalState(modalState + 1);
-                    console.log(addData);
+                    setIsPrev(false);
                   }}
                   className="btn btn-primary btn-elevate"
-                  // disabled={button}
                 >
                   NEXT
                 </button>
@@ -1062,7 +1163,53 @@ export default function User_List() {
             </div>
           </div>
         </Modal.Footer>
+        </Modal>
+        </div>
+      <Modal
+        centered
+        show={delet}
+        onHide={() => {
+          setDelet(!delet)
+          setDeletId("");
+        }}
+        aria-labelledby="example-modal-sizes-title-lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-modal-sizes-title-lg">
+            Delete Category
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <span>
+            Are you sure you want to delete this Category permanently?
+          </span>
+        </Modal.Body>
+        <Modal.Footer>
+          <div>
+            <button
+              type="button"
+              onClick={() => {
+                setDelet(!delet)
+                setDeletId("");
+              }}
+              className="btn btn-light btn-elevate"
+            >
+              Cancel
+            </button>
+            <> </>
+            <button
+              type="button"
+              onClick={() => deletMedicine()}
+              className="btn btn-primary btn-elevate"
+            >
+              Delete
+            </button>
+          </div>
+        </Modal.Footer>
       </Modal>
+      {editModal && <MedicineEdit hide={hide} data={editData} state={editModal} category={category} fetchData={fetchData}></MedicineEdit>}
+     
+      
     </>
   );
 }

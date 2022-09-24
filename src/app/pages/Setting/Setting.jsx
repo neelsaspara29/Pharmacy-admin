@@ -6,45 +6,75 @@ import Avatar from "../../../../src/media/icons/avatar.png";
 import { ApiGet, ApiPost, Bucket } from "../../../helpers/API/ApiData";
 import { useHistory } from "react-router-dom";
 // import General_Info from "./General_Info";
-import Zazzi_Info from "./Zazzi_Info";
-import Portfolio from "./Portfolio";
-import Withdraw from "./Withdraw";
-import { SuccessToast } from "../../../helpers/Toast";
+// import General_Info from './../Photo Graphers/General_Info'
 
-const PhotoGrapher_Details = () => {
+// import Zazzi_Info from "./Zazzi_Info";
+// import Portfolio from "./Portfolio";
+// import Withdraw from "./Withdraw";
+import { SuccessToast } from "../../../helpers/Toast";
+// import Document_Info from "./Document_Info";
+import { data } from "jquery";
+import Basic_Info from "./Basic_Info";
+import Contact_Info from "./Contact_Info";
+
+const Setting = () => {
   const history = useHistory();
   const [toggle, setToggle] = useState("personal");
   const [Data, setData] = useState({});
-  const [block,setblock]=useState(false)
+  const [block, setblock] = useState(false);
+  const [status, setStatus] = useState()
 
   const fetchData = (i) => {
-    ApiGet("/get_photographer_by_id/" + i)
+    ApiGet("/retailer/" + i)
       .then((res) => {
-        console.log("res.data.data", res?.data?.data);
-        setblock(res.data.data[0].isBlock)
-        setData(res?.data?.data[0]);
+        console.log("res.data.data", res?.data?.data.shopName);
+        setblock(res.data.data.isBlock);
+        setStatus(res.data.data.status);
+        setData(res?.data?.data);
+        console.log("hello", res?.data?.data);
       })
       .catch(async (err) => {});
   };
 
- 
-  const handleUserBlock=()=>{
+  const handleUserBlock = () => {
     const idValue = queryString.parse(window.location.search).id;
-    
-    ApiPost(`/account/block`,{
-      "isBlock" : (!block),
-      "userId" :  idValue
-  }).then((data)=>{if(data.data.status=='200'){
-    console.log("blokdkdkdkdk",data)
-      setblock(!block)
-      let str='Photographer has been Successfully ' + (block ?'Unblock':'Blocked');
-      SuccessToast(str);
-    }})
-  }
+
+    ApiPost(`/retailer/block-unblock`, {
+      flag: !block,
+      id: idValue,
+    }).then((data) => {
+      if (data.data.status == "200") {
+        console.log("blokdkdkdkdk", data);
+        setblock(!block);
+        let str =
+          "Photographer has been Successfully " +
+          (block ? "Unblock" : "Blocked");
+        SuccessToast(str);
+      }
+    });
+  };
+  const handleApproveUser = () => {
+    const idValue = queryString.parse(window.location.search).id;
+
+    ApiPost(`/retailer/update/status`, {
+      status: (status == 0 ? 1 : 0),
+      id: idValue,
+    }).then((data) => {
+      if (data.data.status == "200") {
+        console.log("blokdkdkdkdk", data.data.data.status);
+        setStatus(data.data.data.status)
+                
+          
+        SuccessToast("Retailer has been Successfully Approved" );
+      }
+    });
+  };
 
   useEffect(() => {
-    const idValue = queryString.parse(window.location.search);
-    fetchData(idValue.id);
+    // const idValue = queryString.parse(window.location.search);
+    console.log(JSON.parse(localStorage.getItem("userinfo"))._id)
+    const idValue = JSON.parse(localStorage.getItem("userinfo"))._id
+    fetchData(idValue);
   }, []);
 
   return (
@@ -68,13 +98,13 @@ const PhotoGrapher_Details = () => {
                 <li class="breadcrumb-item">
                   <a
                     class="text-muted"
-                    onClick={() => history.push("/photographers")}
+                    onClick={() => history.push("/retailers")}
                   >
-                    Photographers
+                    Setting
                   </a>
                 </li>
                 <li class="breadcrumb-item">
-                  <a class="text-muted">Photographer Details</a>
+                  <a class="text-muted">Admin Details</a>
                 </li>
               </ul>
             </div>
@@ -119,7 +149,7 @@ const PhotoGrapher_Details = () => {
                     <div class="d-flex flex-column">
                       <div class="d-flex align-items-center mb-2">
                         <a class="text-gray-900 text-hover-primary fs-2 fw-bolder me-1">
-                          {Data?.firstName} {Data?.lastName}
+                          {Data.name}
                         </a>
                         <a>
                           <span class="svg-icon svg-icon-1 svg-icon-primary">
@@ -156,7 +186,7 @@ const PhotoGrapher_Details = () => {
                     <div class="d-flex flex-column flex-grow-1">
                       <div class="d-flex flex-wrap justify-content-between">
                         <div className="d-flex flex-wrap">
-                          <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                          {/* <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
                               <div
                                 class="fs-2 fw-bolder"
@@ -164,30 +194,16 @@ const PhotoGrapher_Details = () => {
                                 data-kt-countup-value="4500"
                                 data-kt-countup-prefix="$"
                               >
-                                {Data?.total_feedback}
+                                20
                               </div>
                             </div>
 
-                            <div class="fw-bold fs-6 text-gray-400">
-                              Feedback
-                            </div>
-                          </div>
+                            <div class="fw-bold fs-6 text-gray-400">Order</div>
+                          </div> */}
 
-                          <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
-                            <div class="d-flex align-items-center">
-                              <div
-                                class="fs-2 fw-bolder"
-                                data-kt-countup="true"
-                                data-kt-countup-value="75"
-                              >
-                                {Data?.feedback_rating}
-                              </div>
-                            </div>
+                          
 
-                            <div class="fw-bold fs-6 text-gray-400">Rating</div>
-                          </div>
-
-                          <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
+                          {/* <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                             <div class="d-flex align-items-center">
                               <div
                                 class="fs-2 fw-bolder"
@@ -202,21 +218,13 @@ const PhotoGrapher_Details = () => {
                             <div class="fw-bold fs-6 text-gray-400">
                               Experience
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <button
-                    className={!block?"btn btn btn-primary":"btn btn-success"} id="blockUser"
-                    onClick={()=>handleUserBlock()}
-                    title={block?"Click To unblock User":'Block User'}
-                  >
-                   { block? 'Unblock User':'Block  User'}
-                  </button>
-                </div>
+                
               </div>
               <div class="d-flex overflow-auto h-55px">
                 <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap">
@@ -231,37 +239,19 @@ const PhotoGrapher_Details = () => {
                     </a>
                   </li>
 
-                  <li class="nav-item" onClick={() => setToggle("posts")}>
-                    <a
-                      class={`nav-link text-active-primary me-6 ${toggle ===
-                        "posts" && "active"}`}
-                      data-toggle="tab"
-                      // href="../../demo1/dist/account/settings.html"
-                    >
-                      HealthSarv Info.
-                    </a>
-                  </li>
+                  
 
-                  <li class="nav-item" onClick={() => setToggle("Portfolio")}>
+                  <li class="nav-item" onClick={() => setToggle("contact")}>
                     <a
                       class={`nav-link text-active-primary me-6 ${toggle ===
-                        "Portfolio" && "active"}`}
+                        "contact" && "active"}`}
                       data-toggle="tab"
                       // href="../../demo1/dist/account/statements.html"
                     >
-                      Portfolio
+                      Contact Info.
                     </a>
                   </li>
-                  <li class="nav-item" onClick={() => setToggle("withdraw")}>
-                    <a
-                      class={`nav-link text-active-primary me-6 ${toggle ===
-                        "withdraw" && "active"}`}
-                      data-toggle="tab"
-                      // href="../../demo1/dist/account/statements.html"
-                    >
-                      Withdraw
-                    </a>
-                  </li>
+                  
                 </ul>
               </div>
             </div>
@@ -274,13 +264,17 @@ const PhotoGrapher_Details = () => {
               <div class="d-flex flex-column-fluid">
                 <div class=" container ">
                   {toggle === "personal" ? (
-                    {/* <General_Info data={Data} /> */}
-                  ) : toggle === "posts" ? (
-                    <Zazzi_Info data={Data} />
+                    <Basic_Info data={Data} fetchData={fetchData} />
+                  ) : toggle === "contact" ? (
+                    <Contact_Info data={Data} fetchData={fetchData} />
                   ) : toggle === "Portfolio" ? (
-                    <Portfolio data={Data} />
+                    {
+                      /* <Portfolio data={Data} /> */
+                    }
                   ) : toggle === "withdraw" ? (
-                    <Withdraw data={Data} />
+                    {
+                      /* <Withdraw data={Data} /> */
+                    }
                   ) : (
                     ""
                   )}
@@ -294,4 +288,4 @@ const PhotoGrapher_Details = () => {
   );
 };
 
-export default PhotoGrapher_Details;
+export default Setting;

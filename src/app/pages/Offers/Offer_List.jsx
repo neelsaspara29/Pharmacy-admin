@@ -187,7 +187,7 @@ export default function Offer_List() {
           >
             <div>
               <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
-                {row?.createdAt}
+                {moment(row?.createdAt).format("DD/MM/YYYY")}
               </a>
             </div>
           </div>

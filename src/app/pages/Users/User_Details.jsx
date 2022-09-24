@@ -24,7 +24,7 @@ const User_Details = () => {
             .catch(async (err) => { });
     };
 
-    useEffect(() => {
+useEffect(() => {
         const idValue = queryString.parse(window.location.search);
         fetchData(idValue.id);
     }, []);

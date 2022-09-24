@@ -36,14 +36,9 @@ export function Header() {
 
               <div className="border-right-0 d-flex justify-content-start flex-md-row flex-column" triggerSubdivAction='click' o>
                 <div className="me-2 bold">
-                  Home
+                 Admin Panel
                 </div>
-                <div className="me-2 bold">
-                  Pages
-                </div>
-                <div className="me-2 bold">
-                  Plans
-                </div>
+                
               </div>
             </div>
           </div>

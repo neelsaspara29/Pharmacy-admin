@@ -15,7 +15,7 @@ export const menu = [
   },
   {
     title: "Orders ",
-    pathname: "photographers",
+    pathname: "orders",
     img: `/media/svg/icons/HealthSarvAside/order1.svg`,
     flag: true,
   },
@@ -33,7 +33,7 @@ export const menu = [
   },
   {
     title: "Inventory ",
-    pathname: "booking",
+    pathname: "inventory",
     img: `/media/svg/icons/HealthSarvAside/inventory.svg`,
     flag: true,
   },
@@ -45,7 +45,7 @@ export const menu = [
   },
   {
     title: "Setting",
-    pathname: "job",
+    pathname: "setting",
     img: `/media/svg/icons/HealthSarvAside/settings.svg`,
     flag: true,
   },

@@ -16,7 +16,6 @@ const defaultHeaders = {
   AdditionalParams: {},
   isJsonRequest: true,
   api_key: true,
-  headers: {'Access-Control-Allow-Origin': '*'}
 };
 
 export const ApiPostNoAuth = (type, userData) => {

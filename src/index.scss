@@ -1,4 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 // 3rd-party Plugins
+
 @import "~highlight.js/styles/googlecode.css";
 @import "~perfect-scrollbar/css/perfect-scrollbar.css";
 
@@ -42,6 +47,8 @@
 // .example-highlight {
 //   padding: 0rem 1.5rem 1.75rem !important;
 // }
+
+
 
 .example-highlight > pre {
   background: none transparent !important;
@@ -448,7 +455,7 @@ input::placeholder {
   font: 6px;
 }
 
-.modal-content{
+.modal1 > .modal-content{
   min-height: 600px !important;
 }
 #gallaryimage img{
@@ -460,4 +467,12 @@ input::placeholder {
   overflow-x: scroll;
   width: 100%;
   height: 100%;
+}
+.table th,.table td{
+padding: 1.75rem !important;
+} 
+
+
+::-webkit-scrollbar {
+  display: none;
 }

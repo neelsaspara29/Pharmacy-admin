@@ -1,28 +1,281 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-    MixedWidget1,
-    MixedWidget14,
-    ListsWidget9,
-    StatsWidget11,
-    StatsWidget12,
-    ListsWidget1,
-    AdvanceTablesWidget2,
-    AdvanceTablesWidget4,
-    ListsWidget3,
-    ListsWidget4,
-    ListsWidget8
+  MixedWidget1,
+  MixedWidget14,
+  ListsWidget9,
+  StatsWidget11,
+  StatsWidget12,
+  ListsWidget1,
+  AdvanceTablesWidget2,
+  AdvanceTablesWidget4,
+  ListsWidget3,
+  ListsWidget4,
+  ListsWidget8,
 } from "../widgets";
+import {FaShippingFast} from 'react-icons/fa'
+import {MdOutlinePendingActions} from 'react-icons/md'
+import {BsGraphUp} from 'react-icons/bs'
+import {GoGraph} from 'react-icons/go'
+import { ApiPost } from "../../../helpers/API/ApiData";
+import { ErrorToast } from "../../../helpers/Toast";
 export function Demo1Dashboard() {
-    return (<>
-            <div className="row">
-                <div className="col-lg-12 col-xxl-12">
-                    <MixedWidget1 className="card-stretch gutter-b"/>
+    const [Data, setData] = useState()
+    const fetchData = async () => {
+        // console.log("body out");
+        let body = {
+            
+           timePeriod : 2
+            
+        };
+    
+        await ApiPost("/get/dashboard", body)
+          .then((res) => {
+            console.log("res.data.data", res.data.data);
+            setData(res?.data?.data);
+      
+          })
+          .catch(async (err) => {
+            ErrorToast(err?.message);
+          });
+      };
+    useEffect(() => {
+            fetchData()
+    },[])
+  return (
+    <>
+      <div className="row">
+        <div className="col-lg-12 col-xxl-12">
+          {/* <MixedWidget1 className="card-stretch gutter-b"/> */}
+          {/* time line */}
+          <div
+            class="nav nav-tabs tab-card tab-body-header rounded  d-inline-flex w-sm-100 nav nav-pills mb-3"
+            role="tablist"
+          >
+            <div class="nav-item nav-item">
+              <a
+                href="#summery-today"
+                role="tab"
+                data-rr-ui-event-key="first"
+                id="left-tabs-example-tab-first"
+                aria-controls="left-tabs-example-tabpane-first"
+                class="nav-link  nav-link"
+                tabindex="-1"
+              >
+                Today
+              </a>
+            </div>
+            <div class="nav-item nav-item">
+              <a
+                href="#summery-week"
+                role="tab"
+                data-rr-ui-event-key="second"
+                id="left-tabs-example-tab-second"
+                aria-controls="left-tabs-example-tabpane-second"
+                class="nav-link nav-link"
+                tabindex="-1"
+              >
+                Week
+              </a>
+            </div>
+            <div class="nav-item nav-item">
+              <a
+                href="#summery-month"
+                role="tab"
+                data-rr-ui-event-key="third"
+                id="left-tabs-example-tab-third"
+                aria-controls="left-tabs-example-tabpane-third"
+                class="nav-link nav-link active"
+                aria-selected="true"
+              >
+                Month
+              </a>
+            </div>
+            <div class="nav-item nav-item">
+              <a
+                href="#summery-year"
+                role="tab"
+                data-rr-ui-event-key="fourth"
+                id="left-tabs-example-tab-fourth"
+                aria-controls="left-tabs-example-tabpane-fourth"
+                class="nav-link nav-link"
+                tabindex="-1"
+              >
+                Year
+              </a>
+            </div>
+          </div>
+          {/* main dashboard */}
+          <div class="row g-3 mb-3 row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-4">
+            <div class="col">
+              <div class="alert-success alert mb-0">
+                <div class="d-flex align-items-center">
+                  <div class="avatar rounded no-thumbnail bg-success text-light">
+                    <GoGraph fontSize = {"35px"} />
+                  </div>
+                  <div class="flex-fill ms-3 text-truncate">
+                    <div class="h6 mb-0">Total Orders</div>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalOrders}</span>
+                  </div>
                 </div>
-                {/* <div className="col-lg-6 col-xxl-4">
+              </div>
+            </div>
+            <div class="col">
+              <div class="alert-danger alert mb-0">
+                <div class="d-flex align-items-center">
+                  <div class="avatar rounded no-thumbnail bg-danger text-light">
+                    <FaShippingFast fontSize={"35px"} />
+                  </div>
+                  <div class="flex-fill ms-3 text-truncate">
+                    <div class="h6 mb-0">Processing Orders</div>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.inTransitOrders}</span>
+                  </div>
+                </div>
+              </div>
+            </div>            
+            <div class="col">
+              <div class="alert-warning alert mb-0">
+                <div class="d-flex align-items-center">
+                  <div class="avatar rounded no-thumbnail bg-warning text-light">
+                    <BsGraphUp fontSize={"35px"} />
+                  </div>
+                  <div class="flex-fill ms-3 text-truncate">
+                    <div class="h6 mb-0">Total Sales</div>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales[0].TotalSum}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="alert-info alert mb-0">
+                <div class="d-flex align-items-center">
+                  <div class="avatar rounded no-thumbnail bg-info text-light">
+                    <MdOutlinePendingActions fontSize={"35px"} />
+                  </div>
+                  <div class="flex-fill ms-3 text-truncate">
+                    <div class="h6 mb-0">Pending Invoice</div>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.pendingOrders}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+    {/* lower dashnoad */}
+
+        <div class="col-sm-12 mt-4">
+          {/* <div class="tab-content mt-1 tab-content"> */}
+            <div>
+            
+            <div
+            //   id="left-tabs-example-tabpane-third"
+            //   role="tabpanel"
+            //   aria-labelledby="left-tabs-example-tab-third"
+              class="fade tab-pane fade show tab-pane active show"
+            >
+              <div class="row g-3 mb-4 row-deck">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Active Retailer</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">74,208</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-student-alt fs-3 color-light-orange"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Order</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">22314</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-shopping-cart fs-3 color-lavender-purple"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Avg Sale</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">$21770</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-sale-discount fs-3 color-santa-fe"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Avg Item Sale</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">2185</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-calculator-alt-2 fs-3 color-danger"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Total Sale</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">$235000</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-calculator-alt-1 fs-3 color-lightblue"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                  <div class="card">
+                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                      <div class="left-info">
+                        <span class="text-muted">Total Medicine</span>
+                        <div>
+                          <span class="fs-6 fw-bold me-2">211452</span>
+                        </div>
+                      </div>
+                      <div class="right-icon">
+                        <i class="icofont-users-social fs-3 color-light-success"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* </div> */}
+          </div>
+        </div>
+        {/* <div className="col-lg-6 col-xxl-4">
                     <ListsWidget9 className="card-stretch gutter-b"/>
                 </div> */}
 
-            {/* <div className="col-lg-6 col-xxl-4">
+        {/* <div className="col-lg-6 col-xxl-4">
                     <StatsWidget11 className="card-stretch card-stretch-half gutter-b"/>
                     
                 </div>
@@ -31,8 +284,7 @@ export function Demo1Dashboard() {
                     
                 </div> */}
 
-                
-                {/* <div className="col-lg-6 col-xxl-4 order-1 order-xxl-1">
+        {/* <div className="col-lg-6 col-xxl-4 order-1 order-xxl-1">
                     <ListsWidget1 className="card-stretch gutter-b"/>
                 </div>
                 <div className="col-xxl-8 order-2 order-xxl-1">
@@ -47,8 +299,8 @@ export function Demo1Dashboard() {
                 <div className="col-lg-12 col-xxl-4 order-1 order-xxl-2">
                     <ListsWidget8 className="card-stretch gutter-b"/>
                 </div> */}
-            </div>
-            {/* <div className="row">
+      </div>
+      {/* <div className="row">
                 <div className="col-lg-4">
                     <MixedWidget14 className="card-stretch gutter-b" />
                 </div>
@@ -56,5 +308,6 @@ export function Demo1Dashboard() {
                     <AdvanceTablesWidget4 className="card-stretch gutter-b" />
                 </div>
             </div> */}
-    </>);
+    </>
+  );
 }

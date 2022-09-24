@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Photo_Grapher() {
+export default function Orders() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState("approve");
@@ -73,7 +73,7 @@ export default function Photo_Grapher() {
   const [Id, setId] = React.useState();
   const [rowID, setRowID] = React.useState();
 
-  console.log("data", data);
+  
   const approveBtn = async (row) => {
     let body = {
       id: row._id,
@@ -112,59 +112,42 @@ export default function Photo_Grapher() {
       });
   };
   const columns = [
-    // {
-    //   dataField: "title",
-    //   text: "Title",
-    //   sort: true,
-    // },
+    {
+      dataField: "orderId",
+      text: "ORDER ID",
+      sort: true,
+      formatter: (cell, row, index) => {
+        console.log(cell, row, index);
+        return <span className="text-danger">#{index+1}</span>;
+      },
+    },
     {
       dataField: "name",
-      text: "Name",
+      text: "PHARMACY NAME",
       sort: true,
       formatter: (cell, row) => {
-        //
-        console.log("row", row);
-        console.log("data...................", row);
+      
         return (
-          <div
-            className="d-flex align-items-center"
-            // onClick={() => history.push(`/user_details?id=${row._id}`)}
-          >
-            <div className="symbol symbol-50 symbol-light mr-4">
-              {/* <span className="symbol-label">
-                <span className="svg-icon h-75 align-self-end"> */}
-              {row?.profile_image?.split("/")[2] ==
-              "lh3.googleusercontent.com" ? (
-                <img
-                  src={
-                    row.profile_image
-                      ? row.profile_image
-                      : "https://img.icons8.com/clouds/100/000000/user.png"
-                  }
-                  className="img-fluid w-50px"
-                  style={{ objectFit: "cover" }}
-                />
-              ) : (
-                <img
-                  src={
-                    row.profile_image
-                      ? row.profile_image
-                      : "https://img.icons8.com/clouds/100/000000/user.png"
-                  }
-                  className="img-fluid w-50px"
-                  style={{ objectFit: "cover" }}
-                />
-              )}
-              {/* {row &&  row.original &&  row.original.image && row.original.image.split("/")[2]=="lh3.googleusercontent.com"?<Avatar  style={{ borderRadius: "6px" }} src={row.original.image ? row.original.image : "https://img.icons8.com/clouds/100/000000/user.png"} /> : <Avatar  style={{ borderRadius: "6px" }} src={row.original.image ? Bucket + row.original.image : "https://img.icons8.com/clouds/100/000000/user.png"} />} */}
-              {/* </span>
-              </span> */}
+          <div className="d-flex align-items-center">
+            <div className="symbol symbol-50 symbol-light mr-2">
+              <img
+                src={
+                  row.mainImagee
+                    ? row.mainImage
+                    : "https://img.icons8.com/clouds/100/000000/user.png"
+                }
+                width={30}
+                height={30}
+                className="img-fluid"
+                style={{ objectFit: "cover", width: "30px", height: "30px" }}
+              />
             </div>
             <div>
               <a
                 className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg"
                 onClick={() => click(row)}
               >
-                {row?.firstName} {row?.lastName}
+                {row?.userShopData?.shopName}
               </a>
             </div>
           </div>
@@ -175,41 +158,51 @@ export default function Photo_Grapher() {
       // headerSortingClasses,
     },
     {
-      dataField: "email",
-      text: "Email",
+      dataField: "status",
+      text: "STATUS",
+      sort: true,
+      formatter: (cell, row) => {
+        if (row.orderStatus == 0) {
+          return <div className="text-danger">Pending</div>
+        }
+       else if (row.orderStatus == 1) {
+          return <div className="text-warning">Placed</div>;
+        } else if (row.orderStatus == 2) {
+          return <div className="text-info">Packed</div>;
+        } else if(row.orderStatus==3) {
+          return <div className="text-primary">Shipping</div>;
+        }else{
+          return  <div className="text-success">Delivered</div>
+        }
+      },
+    },
+    {
+      dataField: "total",
+      text: "TOTAL",
       sort: true,
     },
     {
-      dataField: "date",
-      text: "Login Type",
+      dataField: "updatedAt",
+      text: "DATA",
       sort: true,
       formatter: (cell, row) => {
-        //
-        return row.loginType == 0
-          ? " Manual"
-          : row.loginType == 1
-          ? "Google"
-          : "Facebook";
+        return <div>{moment(row.data).format("DD/MM/YYYY")}</div>;
       },
     },
     {
       dataField: "action",
-      text: "Actions",
-      headerStyle: {
-        display: "flex",
-        // justifyContent: "start",
-        // flexDirection: "column-reverse",
-      },
+      text: "action",
+      sort: true,
       formatter: (cell, row) => {
-        if (row.isPhotographerVerified == "approve") {
-          return (
-            <div className="d-flex justify-content-start">
+        return (
+          <div className="d-flex align-items-center">
+            <div clas sName="symbol symbol-50 symbol-light">
               <a
                 title="Edit customer"
                 className="btn btn-icon btn-light btn-hover-primary btn-sm me-3"
                 onClick={() => click(row)}
               >
-                <span className="svg-icon svg-icon-md svg-icon-primary">
+                <span className="svg-icon svg-icon-md svg-icon-primary" onClick={()=>history.push('/order?'+row._id)}>
                   <SVG
                     src={toAbsoluteUrl(
                       "/media/svg/icons/Communication/Write.svg"
@@ -229,157 +222,18 @@ export default function Photo_Grapher() {
                 </span>
               </a>
             </div>
-          );
-        }
-        if (row.isPhotographerVerified == "request") {
-          return (
-            <div class="d-flex justify-content-start">
-              <a
-                title="Edit customer"
-                class="btn btn-icon btn-light btn-hover-primary btn-sm me-3"
-                onClick={() => approveBtn(row)}
-              >
-                <span class="svg-icon svg-icon-md svg-icon-primary">
-                  <svg
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title>Stockholm-icons / Navigation / Check</title>
-                    <desc>Created with Sketch.</desc>
-                    <defs></defs>
-                    <g
-                      id="Stockholm-icons-/-Navigation-/-Check"
-                      stroke="none"
-                      stroke-width="1"
-                      fill="none"
-                      fill-rule="evenodd"
-                    >
-                      <polygon
-                        id="Shape"
-                        points="0 0 24 0 24 24 0 24"
-                      ></polygon>
-                      <path
-                        d="M6.26193932,17.6476484 C5.90425297,18.0684559 5.27315905,18.1196257 4.85235158,17.7619393 C4.43154411,17.404253 4.38037434,16.773159 4.73806068,16.3523516 L13.2380607,6.35235158 C13.6013618,5.92493855 14.2451015,5.87991302 14.6643638,6.25259068 L19.1643638,10.2525907 C19.5771466,10.6195087 19.6143273,11.2515811 19.2474093,11.6643638 C18.8804913,12.0771466 18.2484189,12.1143273 17.8356362,11.7474093 L14.0997854,8.42665306 L6.26193932,17.6476484 Z"
-                        id="Path-94"
-                        fill="#000000"
-                        fill-rule="nonzero"
-                        transform="translate(11.999995, 12.000002) rotate(-180.000000) translate(-11.999995, -12.000002) "
-                      ></path>
-                    </g>
-                  </svg>
-                </span>
-              </a>
-              <a
-                title="Delete customer"
-                class="btn btn-icon btn-light btn-hover-danger btn-sm"
-                onClick={() => rejectBtn(row)}
-              >
-                <span class="svg-icon svg-icon-md svg-icon-danger">
-                  <svg
-                    width="24px"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title>Stockholm-icons / Navigation / Close</title>
-                    <desc>Created with Sketch.</desc>
-                    <defs></defs>
-                    <g
-                      id="Stockholm-icons-/-Navigation-/-Close"
-                      stroke="none"
-                      stroke-width="1"
-                      fill="none"
-                      fill-rule="evenodd"
-                    >
-                      <g
-                        id="Group"
-                        transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) translate(4.000000, 4.000000)"
-                        fill="#000000"
-                      >
-                        <rect
-                          id="Rectangle-185"
-                          x="0"
-                          y="7"
-                          width="16"
-                          height="2"
-                          rx="1"
-                        ></rect>
-                        <rect
-                          id="Rectangle-185-Copy"
-                          opacity="0.3"
-                          transform="translate(8.000000, 8.000000) rotate(-270.000000) translate(-8.000000, -8.000000) "
-                          x="0"
-                          y="7"
-                          width="16"
-                          height="2"
-                          rx="1"
-                        ></rect>
-                      </g>
-                    </g>
-                  </svg>
-                </span>
-              </a>{" "}
-            </div>
-          );
-        }
-        if (row.isPhotographerVerified == "reject") {
-          return (
-            <div className="text-start">
-              <a
-                title="Delete customer"
-                className="btn btn-icon btn-light btn-hover-danger btn-sm"
-              >
-                <span className="svg-icon svg-icon-md svg-icon-danger">
-                  <SVG
-                    src={toAbsoluteUrl("/media/svg/icons/General/Trash.svg")}
-                  />
-                </span>
-              </a>
-            </div>
-          );
-        }
-
-        //
-      },
-
-      classes: "text-right pr-0",
-      headerClasses: "text-right pr-3",
-      style: {
-        minWidth: "100px",
+          </div>
+        );
       },
     },
-
-    // {
-    //   dataField: "postCount",
-    //   text: "Total Post",
-    //   sort: true,
-    // },
-
-    // {
-    //   dataField: "createdAt",
-    //   text: "Created At",
-    //   sort: true,
-    //   formatter: (cell, row) => {
-    //     //
-    //     return moment(row.createdAt).format("DD-MM-YYYY, h:mm a");
-    //   },
-    // },
   ];
 
   const click = (v) => {
-    // setOpen(!open);
-    // console.log(v._id);
-    history.push(`/photoGrapher_details?id=${v._id}`);
-    // setRowID(v._id);
-    // history.push({
-    //   pathname: "/category_Edit",
-    //   state: v._id,
-    // });
-    // setEdited(i);
+    let str = "?id=" + v._id;
+    history.push( {
+      pathname: '/order',
+      search: str
+  })
   };
 
   // console.log("block", block);
@@ -399,26 +253,83 @@ export default function Photo_Grapher() {
     setSelectCat(value);
   };
 
-  const fetchData = (page, limit, search, status) => {
-    // console.log("body out");
-    let body = {
-      limit,
-      page,
-      search,
-      isPhotographerVerified: status,
-    };
-    if (selectCat) body.categoryId = selectCat;
-    ApiPost("/get_photographer", body)
-      .then((res) => {
-        console.log("res.data.data", res.data.data);
-        setData(res?.data?.data?.photographer_data);
-        settotalpage(res?.data?.data?.state?.page_limit);
-        setcurrentpage(res?.data?.data?.state?.page);
-        setpagesize(res?.data?.data?.state?.limit);
-      })
-      .catch(async (err) => {
-        ErrorToast(err?.message);
-      });
+  const fetchData = async (page, limit, search, status) => {
+    console.log("body out"); 
+  
+   
+    await ApiPost("/orders/get",{
+      "page" : 1,
+      "limit" : 10 ,
+      "search" : "",
+  })
+    .then((res) => {
+      console.log("res",res);
+      setData(res?.data?.data.ordersData)
+
+    })
+    .catch(async (err) => {
+      console.log("error",err)
+      ErrorToast(err?.message);
+    });
+    let arr = [
+      {
+        orderId: 320,
+        pharmacyName: "Shubham HealthCare",
+        total: "50000",
+        data: new Date(),
+        status: 1,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "Nell HealthCare",
+        total: "10000",
+        data: new Date(),
+        status: 0,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "Arpit HealthCare",
+        total: "25000",
+        data: new Date(),
+        status: 2,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "Ankit HealthCare",
+        total: "55000",
+        data: new Date(),
+        status: 1,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "India HealthCare",
+        total: "50000",
+        data: new Date(),
+        status: 1,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "Hindustan HealthCare",
+        total: "650000",
+        data: new Date(),
+        status: 1,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "Bharat HealthCare",
+        total: "150000",
+        data: new Date(),
+        status: 0,
+      },
+      {
+        orderId: 320,
+        pharmacyName: "SoneKiChidiya HealthCare",
+        total: "500000",
+        data: new Date(),
+        status: 2,
+      },
+    ];
+    // setData(...data,arr);
   };
 
   const handleonchnagestatus = (e) => {
@@ -428,8 +339,8 @@ export default function Photo_Grapher() {
     fetchData(currentpage, pagesize, searching, e);
   };
 
-  const getGategory = async () => {
-    await ApiGet("/category")
+  const getOrders = async () => {
+    await ApiPost("/orders/get",)
       .then((res) => {
         console.log("res.data.data", res.data.data);
         setGategory(res?.data?.data);
@@ -441,11 +352,9 @@ export default function Photo_Grapher() {
   // console.log("resresresresresresresresresresres", data);
   useEffect(() => {
     fetchData(currentpage, pagesize, searching, state);
-  }, [searching, selectCat]);
-
-  useEffect(() => {
-    getGategory();
   }, []);
+
+ 
   return (
     <>
       <div
@@ -467,9 +376,8 @@ export default function Photo_Grapher() {
                 <li class="breadcrumb-item">
                   <a
                     class="text-muted"
-                    onClick={() => history.push("/photographers")}
                   >
-                    Photographers
+                    Orders
                   </a>
                 </li>
               </ul>
@@ -484,7 +392,7 @@ export default function Photo_Grapher() {
         <div class="card card-custom">
           <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div class="card-title">
-              <h3 class="card-label">Photographers</h3>
+              <h3 class="card-label">Orders</h3>
             </div>
           </div>
 
@@ -512,7 +420,7 @@ export default function Photo_Grapher() {
                         </div>
                       </div>
                       <div className="col-md-3 my-2">
-                        <Dropdown onSelect={handleonchnagestatus}>
+                        {/* <Dropdown onSelect={handleonchnagestatus}>
                           <Dropdown.Toggle
                             id="dropdown-basic"
                             className="text-capitalize"
@@ -521,32 +429,19 @@ export default function Photo_Grapher() {
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu>
-                            <Dropdown.Item eventKey="approve">
-                              Apporve
+                            <Dropdown.Item eventKey="complited">
+                              Complited
                             </Dropdown.Item>
-                            <Dropdown.Item eventKey="request">
-                              Request
+                            <Dropdown.Item eventKey="cancelled">
+                              Cancelled
                             </Dropdown.Item>
-                            <Dropdown.Item eventKey="reject">
-                              Reject
+                            <Dropdown.Item eventKey="pending">
+                              Pending
                             </Dropdown.Item>
                           </Dropdown.Menu>
-                        </Dropdown>
+                        </Dropdown> */}
                       </div>
 
-                      <div class="col-md-4 my-2 my-md-0">
-                        <select
-                          name=""
-                          id="kt_datatable_search_status"
-                          className="form-control"
-                          onChange={handleSelect}
-                        >
-                          <option value="">Select Category</option>
-                          {category?.map((val) => (
-                            <option value={val?._id}>{val?.name}</option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
                   </div>
                 </div>

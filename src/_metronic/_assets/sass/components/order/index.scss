@@ -65,6 +65,7 @@ margin-bottom: 1rem;
   .approved_stat{
     display: flex;
     height: 200px;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
   }

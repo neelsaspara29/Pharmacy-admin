@@ -101,6 +101,7 @@ export default function User_List() {
     category: "",
     tags: "",
     ShortDesc: "",
+    status:""
   });
   const [catArr, setCatArr] = useState([]);
   const [tagArr, setTagArr] = useState([]);
@@ -398,41 +399,7 @@ export default function User_List() {
     setGimages(temp_1);
    
   };
-  const handleSelectSort = async(e) => {
-    console.log(e.target.value)
-    if (e.target.value == "price") {
-      let temp = MainData;
-      temp.sort((val1, val2) => {
-      console.log("ssvsvsvsv",val1.mrp,val2.mrp,typeof val1,Number( val1.mrp) > Number(val2.marp),val1.mrp>val2.mrp)
-       return val1.mrp - val2.mrp;
-      })
-      
-      setData([...temp]);
-      setSorted(1);
-      console.log(temp);
 
-    } else if (e.target.value == "data") {
-      let temp = MainData;
-      temp.sort((val1, val2) => {
-       return new Date(val1.createdAt).getTime() - new Date(val2.createdAt).getTime();
-      })
-      
-      setData([...temp]);
-      setSorted(1);
-      console.log(temp);
-    } else if (e.target.value == "stock") {
-      let temp = MainData;
-      temp.sort((val1, val2) => {
-       return val1.stocks-val2.stocks;
-      })
-      
-      setData([...temp]);
-      setSorted(1);
-      console.log(temp);
-    } else if (e.target.value == "category") {
-      setSorted(1) 
-    }
-  }
   const handleSelectOrder = (e) => {
 
     let name = e.target.value;
@@ -454,12 +421,18 @@ export default function User_List() {
     setEditModal(!editModal);
    }
 
-  const fetchData = async (page, limit, search) => {
+  const fetchData = async (page, limit, search, cid) => {
     let body = {
       search,
       page,
-      limit
+      limit,
+      
     };
+    if(cid) {
+      body.categories = [cid] 
+    }
+
+   
 
     await ApiPost("/medicine/get",body)
       .then((res) => {
@@ -472,71 +445,23 @@ export default function User_List() {
       })
       .catch(async (err) => {
         ErrorToast(err?.message);
+        setData([])
       });
-    let arr=[{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$1000",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$2000",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$1500",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$500",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$3000",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$10000",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$100",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$369",
-    },{
-      id: "#1",
-      name: "Dolo",
-      stocks: "In Stock",
-      createdAt: "22/01/2022",
-      mrp: "$100000",
-      }]
+    
     // setData(arr);
     // setMainData(arr);
     // setData([...data,
       
     // ]);
   };
+
+  const handleSelectCategory = (e) => {
+    console.log(e.target.value)
+    fetchData(currentpage, pagesize, searching, e.target.value);
+    
+  }
   const fetchCategory = async () => {
     await ApiPost("/category/get").then((res) => {
-      console.log(res)
       setCategory(res.data.data)
     });
   };
@@ -623,32 +548,25 @@ export default function User_List() {
                           name=""
                           id="kt_datatable_search_status"
                           className="form-control"
-                          onChange={handleSelectSort}
+                          onChange={handleSelectCategory}
                         >
-                          <option value="">Sort By</option>
+                          <option value="">Select Category</option>
+                            {
+                              category.map((item) => {
+                                return (
+                                  <option value={item._id}>{item.name}</option>
+                                )
+                              })
+                            }
                          
-                            <option value="price">Price</option>
+                            {/* <option value="price">Price</option>
                             <option value="date">Date</option>
                             <option value="category">Category</option>
-                            <option value="stock">Stocks</option>
+                            <option value="stock">Stocks</option> */}
                         
                         </select>
                       </div>
-                      <div class="col-md-4 my-2 my-md-0">
-                        <select
-                          name=""
-                          id="kt_datatable_search_status"
-                          className="form-control"
-                          onChange={handleSelectOrder}
-                        >
-                          
-                         
-                            <option value="Increasing">Increasing Order</option>
-                            <option value="Decreasing">Decreasing Order</option>
-                           
-                        
-                        </select>
-                      </div>
+                      
                     </div>
                     </div>
                   </div>
@@ -1102,6 +1020,7 @@ export default function User_List() {
                         as="select"
                         placeholder="select category"
                         onChange={handleChange}
+                        name="status"
                       >
                         <option>Select Status</option>
                           <option value="public">Public</option>
@@ -1207,7 +1126,7 @@ export default function User_List() {
           </div>
         </Modal.Footer>
       </Modal>
-      {editModal && <MedicineEdit hide={hide} data={editData} state={editModal} category={category} fetchData={fetchData}></MedicineEdit>}
+      {editModal && <MedicineEdit hide={hide} data={editData} state={editModal} category={category} fetchData={fetchData} currentpage = {currentpage} pagesize = {pagesize} searching = {searching} ></MedicineEdit>}
      
       
     </>

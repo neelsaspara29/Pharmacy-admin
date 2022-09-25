@@ -26,7 +26,7 @@ export const menu = [
     flag: true,
   },
   {
-    title: "Retialers ",
+    title: "Retailers ",
     pathname: "retailers",
     img: `/media/svg/icons/HealthSarvAside/retailer.svg`,
     flag: true,
@@ -40,7 +40,7 @@ export const menu = [
   {
     title: "Offers ",
     pathname: "offers",
-    img: `/media/svg/icons/HealthSarvAside/inventory.svg`,
+    img: `/media/svg/icons/HealthSarvAside/offer.svg`,
     flag: true,
   },
   {

@@ -6,7 +6,7 @@ import { SuccessToast } from "../../../helpers/Toast";
 
 const mname = ["Premium Medicare","Pharma Art", "Optimum Healthcare", "Quick Health Remedies", "Diligent Health Solutions", "Noble Pharmaceuticals", "Healthy Life Medicare", "Perfect Pharma Solutions", "Wellness Pharma", "Good Health Pharmaceuticals"]
 
-function MedicineEdit({ data, hide, state, category,fetchData }) {
+function MedicineEdit({ data, hide, state, category,fetchData, currentpage, pagesize, searching }) {
   console.log(data, hide, state,category);
   const [editData, setEditData] = useState([]);
   const [modalState, setModalState] = useState(1);
@@ -40,6 +40,7 @@ function MedicineEdit({ data, hide, state, category,fetchData }) {
     }else {
       setMnameSuggestion([])
     }
+    console.log()
     setEditData((data) => {
       return { ...data, [name]: value };
     });
@@ -48,7 +49,7 @@ function MedicineEdit({ data, hide, state, category,fetchData }) {
     const category_show = document.getElementById("category_show");
     if (e.target.value != "Select Category")
       category_show.innerHTML += `<span class='p-2 bg-light m-2'>${e.target.value}</span>`;
-    setCatArr([...catArr, e.target.options[e.target.selectedIndex].dataset.id]);
+    setCatArr([...catArr, ...editData.category, e.target.options[e.target.selectedIndex].dataset.id]);
   };
   const handleTagShow = (e) => {
     const tags_show = document.getElementById("tags_show");
@@ -124,14 +125,16 @@ function MedicineEdit({ data, hide, state, category,fetchData }) {
   };
   const handleMedicineUpdate = async ()=> {
     let body = editData;
+    body.category = catArr
     body.medicineId = data._id;
     body.tags = data.tags.concat(tagArr);
+    body.category = data.category.concat(catArr);
     console.log(body)
     await ApiPost('/medicine/update', body).then((res) => {
       if (res.status == 200) {
         hide();
         SuccessToast("Medicine Updated Successfully") 
-        fetchData();
+        fetchData(currentpage, pagesize, searching);
       }
     })
   }
@@ -548,17 +551,18 @@ function MedicineEdit({ data, hide, state, category,fetchData }) {
                     </div>
                     <div className="col-4">
                       <Form.Group md="6">
-                        <Form.Label>Publish</Form.Label>
+                        <Form.Label>Status</Form.Label>
                         <Form.Group md="6">
-                      <Form.Label>Publish</Form.Label>
+                      
                       <Form.Control
                         as="select"
                         placeholder="select category"
-                        onChange={handleChange}
+                            // onChange={handleChange}
+                            name="status"
                       >
                         <option>Select Status</option>
-                          <option value="public">Public</option>
-                          <option value="draft">Draft</option>
+                         { editData.status=="public"?<option value="public" selected>Public</option>:<option value="public"  >Public</option>}
+                         { editData.status=="draft"?<option value="draft" selected>Draft</option>:<option value="public"  >Draft</option>}
                       </Form.Control>
                     </Form.Group>
                       </Form.Group>

@@ -72,7 +72,7 @@ export default function Orders() {
   const [open, setOpen] = React.useState(false);
   const [Id, setId] = React.useState();
   const [rowID, setRowID] = React.useState();
-
+  const [date, setDate] = useState()
   
   const approveBtn = async (row) => {
     let body = {
@@ -118,7 +118,7 @@ export default function Orders() {
       sort: true,
       formatter: (cell, row, index) => {
         console.log(cell, row, index);
-        return <span className="text-danger">#{index+1}</span>;
+        return <span className="text-danger">#{index + 1}</span>;
       },
     },
     {
@@ -126,7 +126,6 @@ export default function Orders() {
       text: "PHARMACY NAME",
       sort: true,
       formatter: (cell, row) => {
-      
         return (
           <div className="d-flex align-items-center">
             <div className="symbol symbol-50 symbol-light mr-2">
@@ -163,16 +162,21 @@ export default function Orders() {
       sort: true,
       formatter: (cell, row) => {
         if (row.orderStatus == 0) {
-          return <div className="text-danger">Pending</div>
+          return <div className="text-danger">Placed/Approved Pending</div>;
+        } else if (row.orderStatus == 1) {
+          return <div className="text-warning">Packed</div>;
+        }else if (row.orderStatus == 2) {
+          return <div className="" style={{color:"red"}}>Rejected</div>;
         }
-       else if (row.orderStatus == 1) {
-          return <div className="text-warning">Placed</div>;
-        } else if (row.orderStatus == 2) {
-          return <div className="text-info">Packed</div>;
-        } else if(row.orderStatus==3) {
-          return <div className="text-primary">Shipping</div>;
-        }else{
-          return  <div className="text-success">Delivered</div>
+        else if (row.orderStatus == 3) {
+          return <div className="text-info">Shipping</div>;
+        } else if (row.orderStatus == 4) {
+          return <div className="text-primary">Delivered</div>;
+        } else if(row.orderStatus == 5){
+          return <div className="text-success">Returning</div>;
+        }
+        else if(row.orderStatus == 8){
+          return <div className="text-success">Return</div>;
         }
       },
     },
@@ -195,34 +199,16 @@ export default function Orders() {
       sort: true,
       formatter: (cell, row) => {
         return (
-          <div className="d-flex align-items-center">
-            <div clas sName="symbol symbol-50 symbol-light">
-              <a
-                title="Edit customer"
-                className="btn btn-icon btn-light btn-hover-primary btn-sm me-3"
-                onClick={() => click(row)}
-              >
-                <span className="svg-icon svg-icon-md svg-icon-primary" onClick={()=>history.push('/order?'+row._id)}>
-                  <SVG
-                    src={toAbsoluteUrl(
-                      "/media/svg/icons/Communication/Write.svg"
-                    )}
-                  />
-                </span>
-              </a>
-              <a
-                title="Delete customer"
-                className="btn btn-icon btn-light btn-hover-danger btn-sm"
-                onClick={() => deleteUserBtn(row._id)}
-              >
-                <span className="svg-icon svg-icon-md svg-icon-danger">
-                  <SVG
-                    src={toAbsoluteUrl("/media/svg/icons/General/Trash.svg")}
-                  />
-                </span>
-              </a>
+          <>
+            {" "}
+            <div
+              className=" btn-primary p-2 "
+              style={{ fontSize: "10px",textAlign:'center' }}
+              onClick={()=>click(row)}
+            >
+              View
             </div>
-          </div>
+          </>
         );
       },
     },
@@ -230,16 +216,18 @@ export default function Orders() {
 
   const click = (v) => {
     let str = "?id=" + v._id;
-    history.push( {
-      pathname: '/order',
-      search: str
-  })
+    history.push({
+      pathname: "/order?id="+v._id,
+      // param:v._id,
+      // search: str,
+    });
   };
 
   // console.log("block", block);
 
   const handlesearch = (e) => {
     setsearching(e.target.value);
+    fetchData(currentpage, pagesize,searching)
   };
   const handleonchnagespagination = (e) => {
     fetchData(1, parseInt(e.target.value), state, searching, state);
@@ -253,94 +241,88 @@ export default function Orders() {
     setSelectCat(value);
   };
 
-  const fetchData = async (page, limit, search, status) => {
+  const fetchData = async (page, limit, search, status, date) => {
     console.log("body out"); 
+
+    let body = {
+      page: page,
+      limit: limit,
+      search: search,
+      
+    }
+    if(status) {
+      body.statusFilter = parseInt(status)
+    }
+    if(date){
+      console.log("hello")
+      body.dateFilter = date
+    }
   
    
-    await ApiPost("/orders/get",{
-      "page" : 1,
-      "limit" : 10 ,
-      "search" : "",
-  })
+    await ApiPost("/orders/get",body)
     .then((res) => {
       console.log("res",res);
       setData(res?.data?.data.ordersData)
+      settotalpage(res?.data?.data?.state?.page_limit);
+        setcurrentpage(res?.data?.data?.state?.page);
+        setpagesize(res?.data?.data?.state?.limit);
 
     })
     .catch(async (err) => {
       console.log("error",err)
       ErrorToast(err?.message);
+      setData([])
     });
-    let arr = [
-      {
-        orderId: 320,
-        pharmacyName: "Shubham HealthCare",
-        total: "50000",
-        data: new Date(),
-        status: 1,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "Nell HealthCare",
-        total: "10000",
-        data: new Date(),
-        status: 0,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "Arpit HealthCare",
-        total: "25000",
-        data: new Date(),
-        status: 2,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "Ankit HealthCare",
-        total: "55000",
-        data: new Date(),
-        status: 1,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "India HealthCare",
-        total: "50000",
-        data: new Date(),
-        status: 1,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "Hindustan HealthCare",
-        total: "650000",
-        data: new Date(),
-        status: 1,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "Bharat HealthCare",
-        total: "150000",
-        data: new Date(),
-        status: 0,
-      },
-      {
-        orderId: 320,
-        pharmacyName: "SoneKiChidiya HealthCare",
-        total: "500000",
-        data: new Date(),
-        status: 2,
-      },
-    ];
     // setData(...data,arr);
   };
 
+
+  // const apply = (event, picker) => {
+  //   console.log(picker, event);
+
+  //   setpicker(picker);
+  //   setvalll(
+  //     `${moment(picker.startDate._d).format("DD-MM-YYYY")}-${moment(
+  //       picker.endDate._d
+  //     ).format("DD-MM-YYYY")}`
+  //   );
+  //   console.log(moment(picker.startDate._d).format("YYYY-MM-DD"));
+  // };
+  // const cancel = (event, picker) => {
+  //   console.log(picker, event);
+
+  //   setpicker("");
+  //   setvalll("");
+  //   // console.log(moment(picker.startDate._d).format('YYYY-MM-DD'))
+  // };
+
   const handleonchnagestatus = (e) => {
     // console.log(e.target.value);
-    console.log("statsiss....................................", e);
-    setState(e);
-    fetchData(currentpage, pagesize, searching, e);
+    console.log("statsiss....................................", e.target.value);
+    // if(e == 0) {
+    //   setState("Processing")
+    // }else if(e==1) {
+    //   setState("Packed")
+    // }else if(e==2) {
+    //   setState("Rejected")      
+    // }else if(e == 3) {
+    //   setState("In Transit")
+    // }else if(e==4) {
+    //   setState
+
+    // }else if(e ==5) {
+
+    // }else if(e == 6) {
+
+    // }else {
+    //   setState("All")
+    // }
+    // setState(e);
+    fetchData(currentpage, pagesize, searching, e.target.value);
   };
 
   const getOrders = async () => {
-    await ApiPost("/orders/get",)
+    await ApiPost("/orders/get")
       .then((res) => {
         console.log("res.data.data", res.data.data);
         setGategory(res?.data?.data);
@@ -349,12 +331,17 @@ export default function Orders() {
         ErrorToast(err?.message);
       });
   };
+
+  const handleDateChange = (e) => {
+    setDate(e.target.value);
+    fetchData(currentpage, pagesize, searching,"" , e.target.value)
+  }
+
   // console.log("resresresresresresresresresresres", data);
   useEffect(() => {
-    fetchData(currentpage, pagesize, searching, state);
+    fetchData(currentpage, pagesize, searching);
   }, []);
 
- 
   return (
     <>
       <div
@@ -374,11 +361,7 @@ export default function Orders() {
                   </a>
                 </li>
                 <li class="breadcrumb-item">
-                  <a
-                    class="text-muted"
-                  >
-                    Orders
-                  </a>
+                  <a class="text-muted">Orders</a>
                 </li>
               </ul>
             </div>
@@ -392,14 +375,14 @@ export default function Orders() {
         <div class="card card-custom">
           <div class="card-header flex-wrap border-0 pt-6 pb-0">
             <div class="card-title">
-              <h3 class="card-label">Orders</h3>
+              <h3 class="card-label">ORDERS</h3>
             </div>
           </div>
 
           <div className={`card h-80  d-flex  ${classes.card}`}>
             {/* Body */}
             <div className=" card-body">
-              <div class="mb-5">
+               <div class="mb-5">
                 <div class="row align-items-center">
                   <div class="col-lg-9 col-xl-8">
                     <div class="row align-items-center">
@@ -420,32 +403,46 @@ export default function Orders() {
                         </div>
                       </div>
                       <div className="col-md-3 my-2">
-                        {/* <Dropdown onSelect={handleonchnagestatus}>
-                          <Dropdown.Toggle
-                            id="dropdown-basic"
-                            className="text-capitalize"
-                          >
-                            {state}
-                          </Dropdown.Toggle>
+                      <select
+                          name=""
+                          id="kt_datatable_search_status"
+                          className="form-control"
+                          onChange={handleonchnagestatus}
+                        >
+                          <option value="">Select Category</option>
+                          <option value="0">Processing</option>
+                          <option value="1">Packed</option>
+                          <option value="2">Rejected</option>
+                          <option value="3">In Transit</option>
+                          <option value="4">Delivered</option>
+                          <option value="5">Return</option>
+                          <option value="6">Return Completed</option>
+                         
+                            {/* <option value="price">Price</option>
+                            <option value="date">Date</option>
+                            <option value="category">Category</option>
+                            <option value="stock">Stocks</option> */}
+                        
+                        </select>
 
-                          <Dropdown.Menu>
-                            <Dropdown.Item eventKey="complited">
-                              Complited
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="cancelled">
-                              Cancelled
-                            </Dropdown.Item>
-                            <Dropdown.Item eventKey="pending">
-                              Pending
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown> */}
+                         
+                      </div>
+                      <div className="col-md-3 my-2">
+                        {/* <DateRangePicker onApply={apply} onCancel={cancel}>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={valll}
+                            placeholder="Select Date Range"
+                          />
+                        </DateRangePicker> */}
+                        <input type="date" className="form-control" placeholder="select date" value={date} onChange= {handleDateChange} />
                       </div>
 
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> 
               <BootstrapTable
                 wrapperClasses="table-responsive"
                 bordered={false}

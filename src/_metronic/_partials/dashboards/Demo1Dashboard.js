@@ -20,6 +20,7 @@ import { ApiPost } from "../../../helpers/API/ApiData";
 import { ErrorToast } from "../../../helpers/Toast";
 export function Demo1Dashboard() {
     const [Data, setData] = useState()
+    const [time, setTime] = useState(0)
     const fetchData = async () => {
         // console.log("body out");
         let body = {
@@ -53,12 +54,12 @@ export function Demo1Dashboard() {
           >
             <div class="nav-item nav-item">
               <a
-                href="#summery-today"
                 role="tab"
                 data-rr-ui-event-key="first"
                 id="left-tabs-example-tab-first"
                 aria-controls="left-tabs-example-tabpane-first"
-                class="nav-link  nav-link"
+                onClick={() => {setTime(0)}}
+                class={ time == 0 ? "nav-link active"  :"nav-link" }
                 tabindex="-1"
               >
                 Today
@@ -66,12 +67,12 @@ export function Demo1Dashboard() {
             </div>
             <div class="nav-item nav-item">
               <a
-                href="#summery-week"
                 role="tab"
                 data-rr-ui-event-key="second"
                 id="left-tabs-example-tab-second"
                 aria-controls="left-tabs-example-tabpane-second"
-                class="nav-link nav-link"
+                onClick={() => {setTime(1)}}
+                class={ time == 1 ? "nav-link active"  :"nav-link" }
                 tabindex="-1"
               >
                 Week
@@ -79,12 +80,12 @@ export function Demo1Dashboard() {
             </div>
             <div class="nav-item nav-item">
               <a
-                href="#summery-month"
                 role="tab"
                 data-rr-ui-event-key="third"
                 id="left-tabs-example-tab-third"
                 aria-controls="left-tabs-example-tabpane-third"
-                class="nav-link nav-link active"
+                onClick={() => {setTime(2)}}
+                class={ time == 2 ? "nav-link active"  :"nav-link" }
                 aria-selected="true"
               >
                 Month
@@ -92,12 +93,12 @@ export function Demo1Dashboard() {
             </div>
             <div class="nav-item nav-item">
               <a
-                href="#summery-year"
                 role="tab"
                 data-rr-ui-event-key="fourth"
                 id="left-tabs-example-tab-fourth"
                 aria-controls="left-tabs-example-tabpane-fourth"
-                class="nav-link nav-link"
+                onClick={() => {setTime(3)}}
+                class={ time == 3 ? "nav-link active"  :"nav-link" }
                 tabindex="-1"
               >
                 Year
@@ -105,7 +106,7 @@ export function Demo1Dashboard() {
             </div>
           </div>
           {/* main dashboard */}
-          <div class="row g-3 mb-3 row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-4">
+          <div class="row g-3 mt-3 mb-3 row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-4">
             <div class="col">
               <div class="alert-success alert mb-0">
                 <div class="d-flex align-items-center">
@@ -140,7 +141,7 @@ export function Demo1Dashboard() {
                   </div>
                   <div class="flex-fill ms-3 text-truncate">
                     <div class="h6 mb-0">Total Sales</div>
-                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales[0].TotalSum}</span>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales[0]?.TotalSum}</span>
                   </div>
                 </div>
               </div>

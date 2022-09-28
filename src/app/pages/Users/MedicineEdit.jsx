@@ -162,6 +162,21 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
               <div className="form-group row">
                 <div className="col-lg-12">
                   <Form.Group md="6">
+                    <Form.Label>Batch No.</Form.Label>
+                    <Form.Control
+                      type="text"
+                      id="validID"
+                      label="BatchNo."
+                      required
+                      name="batchNo"
+                      onChange={handleChange}
+                      value={editData.batchNo}
+                      placeholder="Batch Number"
+                    />
+
+                    <span className="errorInput"></span>
+                  </Form.Group>
+                  <Form.Group md="6">
                     <Form.Label>Medicine Name</Form.Label>
                     <Form.Control
                       type="text"
@@ -537,7 +552,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                         <Form.Label>Product Short Description</Form.Label>
                         <Form.Control
                           as="textarea"
-                          rows={3}
+                          rows={6}
                           value={editData.ShortDesc}
                           name="ShortDesc"
                           onChange={handleChange}
@@ -550,6 +565,20 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                       </Form.Group>
                     </div>
                     <div className="col-4">
+                    <Form.Group md="6">
+                      <Form.Label>Gst</Form.Label>
+                      <Form.Control
+                        type="text"
+                        id="gst"
+                        // className={errors["name"] && "chipInputRed"}
+                        label="tags"
+                        required
+                        name="gst"
+                        placeholder="Gst Detail"
+                        onChange={handleChange}
+                        value={editData.gst}
+                      />
+                    </Form.Group>
                       <Form.Group md="6">
                         <Form.Label>Status</Form.Label>
                         <Form.Group md="6">
@@ -557,12 +586,12 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                       <Form.Control
                         as="select"
                         placeholder="select category"
-                            // onChange={handleChange}
+                            onChange={handleChange}
                             name="status"
                       >
                         <option>Select Status</option>
-                         { editData.status=="public"?<option value="public" selected>Public</option>:<option value="public"  >Public</option>}
-                         { editData.status=="draft"?<option value="draft" selected>Draft</option>:<option value="public"  >Draft</option>}
+                         { editData.status==true?<option value="true" selected>Public</option>:<option value="true"  >Public</option>}
+                         { editData.status==false?<option value="false" selected>Draft</option>:<option value="false"  >Draft</option>}
                       </Form.Control>
                     </Form.Group>
                       </Form.Group>

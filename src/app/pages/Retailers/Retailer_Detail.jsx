@@ -45,7 +45,7 @@ const Retailer_Detail = () => {
         console.log("blokdkdkdkdk", data);
         setblock(!block);
         let str =
-          "Photographer has been Successfully " +
+          "Retailer has been Successfully " +
           (block ? "Unblock" : "Blocked");
         SuccessToast(str);
       }

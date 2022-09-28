@@ -55,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let firstSearch = true;
+
 export default function Orders() {
   const classes = useStyles();
   const history = useHistory();
@@ -72,7 +74,8 @@ export default function Orders() {
   const [open, setOpen] = React.useState(false);
   const [Id, setId] = React.useState();
   const [rowID, setRowID] = React.useState();
-  const [date, setDate] = useState()
+  const [date, setDate] = useState();
+  // const [firstSearch, setFirstSearch] = useState(true)
   
   const approveBtn = async (row) => {
     let body = {
@@ -230,7 +233,7 @@ export default function Orders() {
     fetchData(currentpage, pagesize,searching)
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), state, searching, state);
+    fetchData(1, parseInt(e.target.value), searching, state);
   };
   const handleChange = (e, i) => {
     fetchData(i, pagesize, searching, state);
@@ -266,11 +269,15 @@ export default function Orders() {
       settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
+        firstSearch = true
 
     })
     .catch(async (err) => {
       console.log("error",err)
-      ErrorToast(err?.message);
+      if(firstSearch) {
+        ErrorToast("Search Completed");
+        firstSearch =  false
+      }
       setData([])
     });
     // setData(...data,arr);

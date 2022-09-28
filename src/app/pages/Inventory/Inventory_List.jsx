@@ -57,6 +57,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let firstSearch = true
+
 export default function Inventory_List() {
   const classes = useStyles();
   const history = useHistory();
@@ -102,6 +104,30 @@ export default function Inventory_List() {
             <div>
               <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
                 {row?.name}
+              </a>
+            </div>
+          </div>
+        );
+      },
+      // sort: true,
+      //   sortCaret: sortCaret,
+      // headerSortingClasses,
+    },
+    {
+      dataField: "Batch_id",
+      text: "Batch No",
+      sort: true,
+      formatter: (cell, row) => {
+        console.log("row", row);
+        return (
+          <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.batchNo}
               </a>
             </div>
           </div>
@@ -204,7 +230,7 @@ export default function Inventory_List() {
             
             <div>
               <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
-                5%
+                {row?.gst + "%"}
               </a>
             </div>
           </div>
@@ -313,7 +339,7 @@ export default function Inventory_List() {
     fetchData(currentpage, pagesize, e.target.value);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), state, searching);
+    fetchData(1, parseInt(e.target.value), searching);
   };
   const handleChange = (e, i) => {
     fetchData(i, pagesize, searching);
@@ -335,9 +361,14 @@ export default function Inventory_List() {
         settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
+        firstSearch = true
       })
       .catch(async (err) => {
-        ErrorToast(err?.message);
+        if(firstSearch) {
+          ErrorToast("Search Completed");
+          firstSearch = false
+        }
+        setData([])
       });
   };
   // console.log("resresresresresresresresresresres", data);

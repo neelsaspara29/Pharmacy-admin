@@ -59,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let firstSearch = true
+
 export default function Retailer_List() {
   const classes = useStyles();
   const history = useHistory();
@@ -247,7 +249,7 @@ export default function Retailer_List() {
     fetchData(currentpage, pagesize, e.target.value);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), state, searching);
+    fetchData(1, parseInt(e.target.value), searching);
   };
   const handleChange = (e, i) => {
     fetchData(i, pagesize, searching);
@@ -269,9 +271,15 @@ export default function Retailer_List() {
         settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
+        firstSearch = true
       })
       .catch(async (err) => {
-        ErrorToast(err?.message);
+        if(firstSearch) {
+          ErrorToast(err?.message);
+
+          firstSearch = false
+        }
+        setData([])
       });
   };
   // console.log("resresresresresresresresresresres", data);

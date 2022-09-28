@@ -67,6 +67,8 @@ const useStyles = makeStyles((theme) => ({
 
 const mname = ["Premium Medicare","Pharma Art", "Optimum Healthcare", "Quick Health Remedies", "Diligent Health Solutions", "Noble Pharmaceuticals", "Healthy Life Medicare", "Perfect Pharma Solutions", "Wellness Pharma", "Good Health Pharmaceuticals"]
 
+let firstSearch = true;
+
 
 export default function User_List() {
   const classes = useStyles();
@@ -256,7 +258,7 @@ export default function User_List() {
     fetchData(currentpage, pagesize, e.target.value);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), state, searching);
+    fetchData(1, parseInt(e.target.value), searching);
   };
 
 
@@ -442,9 +444,13 @@ export default function User_List() {
         settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
+        firstSearch = true
       })
       .catch(async (err) => {
-        ErrorToast(err?.message);
+        if(firstSearch) {
+          ErrorToast(err?.message);
+          firstSearch = false;
+        }
         setData([])
       });
     
@@ -636,6 +642,21 @@ export default function User_List() {
           {modalState == 1 && (
             <div className="form-group row">
               <div className="col-lg-12">
+              <Form.Group md="6">
+                    <Form.Label>Batch No.</Form.Label>
+                    <Form.Control
+                      type="text"
+                      id="validID"
+                      label="BatchNo."
+                      required
+                      name="batchNo"
+                      onChange={handleChange}
+                      value={addData.batchNo}
+                      placeholder="Batch Number"
+                    />
+
+                    <span className="errorInput"></span>
+                  </Form.Group>
                 <Form.Group md="6">
                   <Form.Label>Medicine Name</Form.Label>
                   <Form.Control
@@ -1001,7 +1022,7 @@ export default function User_List() {
                       <Form.Label>Product Short Description</Form.Label>
                       <Form.Control
                         as="textarea"
-                        rows={3}
+                        rows={6}
                         value={addData.ShortDesc}
                         name="ShortDesc"
                         onChange={handleChange}
@@ -1015,6 +1036,22 @@ export default function User_List() {
                   </div>
                   <div className="col-4">
                     <Form.Group md="6">
+                      <Form.Label>Gst</Form.Label>
+                      <Form.Control
+                        type="text"
+                        id="gst"
+                        // className={errors["name"] && "chipInputRed"}
+                        label="tags"
+                        required
+                        name="gst"
+                        placeholder="Gst Detail"
+                        onChange={handleChange}
+                        value={addData.gst}
+                      />
+                    </Form.Group>
+                  {/* </div>
+                  <div className="col-4"> */}
+                    <Form.Group md="6">
                       <Form.Label>Publish</Form.Label>
                       <Form.Control
                         as="select"
@@ -1023,8 +1060,8 @@ export default function User_List() {
                         name="status"
                       >
                         <option>Select Status</option>
-                          <option value="public">Public</option>
-                          <option value="draft">Draft</option>
+                          <option value="true">Public</option>
+                          <option value="false">Draft</option>
                       </Form.Control>
                     </Form.Group>
                   </div>

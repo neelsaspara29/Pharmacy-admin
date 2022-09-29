@@ -59,6 +59,7 @@ const Retailer_Edit = ({
   const [loading, setLoading] = useState(false);
   const [button, setbutton] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [modalState, setModalState] = useState(1);
   const validateForm = () => {
     console.log("valid");
     let errors = {};
@@ -177,20 +178,23 @@ const Retailer_Edit = ({
   };
   return (
     <>
-      <Modal
-        show={open}
-        centered
-        size="lg"
-        onHide={() => clear()}
-        aria-labelledby="example-modal-sizes-title-lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="example-modal-sizes-title-lg">
-            {update === true ? "Add" : "Edit"} Retailer{" "}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="overlay overlay-block cursor-default">
-          <div class="card-body pt-9 pb-0 mx-0 px-0 ">
+   
+        <Modal
+          show={open}
+          centered
+          size="lg"
+          onHide={() => clear()}
+          aria-labelledby="example-modal-sizes-title-lg"
+          contentClassName="modaldailog"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Medicine Edit
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="overlay overlay-block cursor-default">
+            {modalState == 1 && (
+              <div class="card-body pt-9 pb-0 mx-0 px-0 ">
             {/* <div className="mb-7 text-center d-flex flex-column align-center align-items-center overflow-scroll"> */}
            
             
@@ -256,28 +260,180 @@ const Retailer_Edit = ({
               </div>
             </div>
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            type="button"
-            onClick={clear}
-            className="btn btn-light btn-elevate"
-          >
-            Cancel
-          </button>
-          <> </>
+            )}
+            {modalState == 2 && (
+              <div class="card-body pt-9 pb-0 mx-0 px-0 ">
+            {/* <div className="mb-7 text-center d-flex flex-column align-center align-items-center overflow-scroll"> */}
+           
+            
+            
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Drug Licence Number
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="dDrugLicence"
+                  id="dDrugLicence"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.dDrugLicence}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Pan Card Number
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="dPanCard"
+                  id="dPanCard"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.dPanCard}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Gst Number
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="dGst"
+                  id="dGst"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.dGst}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+          </div>
+            )}
+            {modalState == 3 && (
+              <div class="card-body pt-9 pb-0 mx-0 px-0 ">
+            {/* <div className="mb-7 text-center d-flex flex-column align-center align-items-center overflow-scroll"> */}
+           
+            
+            
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Address Name
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="addName"
+                  id="addName"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.addName}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Address Mobile Number
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="addMobile"
+                  id="addMobile"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.addMobile}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Shop Number
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="addStoreNumber"
+                  id="addStoreNumber"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.addStoreNumber}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+            <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Address
+              </label>
+              <div className="col-lg-8">
+                <input
+                  name="addressLine"
+                  id="addressLine"
+                  className="form-control"
+                  onChange={handleChange}
+                  value={data.addressLine}
+                />
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
+            </div>
+          </div>
+            )}
           
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              className="btn btn-primary btn-elevate"
-              disabled={button}
-            >
-              Submit
-            </button>
-          
-        </Modal.Footer>
-      </Modal>
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="d-flex justify-content-between w-100 ">
+              <button
+                onClick={() => {
+                  setModalState(modalState - 1);
+                  // console.log(addData);
+                }}
+                // disabled={button}
+                className={`btn btn-primary btn-elevate ${
+                  modalState == 1 ? "invisible" : "visible"
+                }`}
+              >
+                PREV
+              </button>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => clear()}
+                  className="btn btn-light btn-elevate mr-2"
+                >
+                  Cancel
+                </button>
+
+                {modalState != 3 ? (
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      setModalState(modalState + 1);
+                      // console.log(addData);
+                    }}
+                    className="btn btn-primary btn-elevate"
+                    // disabled={button}
+                  >
+                    NEXT
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                      onClick={handleSubmit}
+                    // disabled={button}
+                    className="btn btn-primary btn-elevate"
+                  >
+                    UPDATE
+                  </button>
+                )}
+              </div>
+            </div>
+          </Modal.Footer>
+        </Modal>
+     
     </>
   );
 };

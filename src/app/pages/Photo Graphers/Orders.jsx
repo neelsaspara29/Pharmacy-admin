@@ -416,7 +416,7 @@ export default function Orders() {
                           className="form-control"
                           onChange={handleonchnagestatus}
                         >
-                          <option value="">Select Category</option>
+                          <option value="">Select Status</option>
                           <option value="0">Processing</option>
                           <option value="1">Packed</option>
                           <option value="2">Rejected</option>

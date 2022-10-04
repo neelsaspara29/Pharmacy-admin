@@ -16,10 +16,13 @@ import Avatar from "../../../../src/media/icons/avatar.png";
 import Avatar2 from "../../../../src/media/icons/avatar2.png";
 import { ErrorToast, SuccessToast } from "../../../helpers/Toast";
 import { FaPen } from 'react-icons/fa'
+import { Dvr } from "@material-ui/icons";
 const General_Info = ({ data }) => {
   const [flag, setFlag] = useState(0);
   const [inputText, setInputText] = useState({})
   const [imgUrl, setImgUrl] = useState(data?.profile_image)
+  const [changed, setChanged] = useState(false)
+  const [dv, setDv] = useState("")
   const history = useHistory()
   let pathName = window.location.pathname
 
@@ -77,6 +80,32 @@ const General_Info = ({ data }) => {
       .then(res => setImgUrl(res?.data?.data?.image))
       .catch(err => console.log('res_blob', err))
   }
+
+  const handleSubmit = async () => {
+    const idValue = queryString.parse(window.location.search);
+
+    let body = {
+        id: idValue,
+        discount: parseInt(dv)
+    }
+    await ApiPost("/retailers/update/discount", body)
+        .then(res => {
+          SuccessToast("Retailer has been Successfully Updated !!!");
+          setChanged(false)
+         
+        })
+        .catch(err => ErrorToast("Retailer Update Failed"))
+  }
+  useEffect(() => {
+    console.log("cc",data)
+
+      setDv(data?.discount)
+      if(!data?.discount) {
+        setChanged(true)
+      }else {
+        setChanged(false)
+      }
+  },[data])
   return (
     <>
       <div class="general_info" id="">
@@ -100,6 +129,23 @@ const General_Info = ({ data }) => {
                     <span class="fw-bolder fs-6 text-gray-800">
                       {data?.shopName}
                     </span>
+                  </div>
+                </div>
+                <div class="row mb-7">
+                  <label class="col-lg-4 fw-bold text-muted">Discount</label>
+                  <div class="col-lg-8">
+                    {dv && !changed ? <><span class="fw-bolder fs-6 text-gray-800">
+                      {dv}
+                    
+                      
+                      <button className="btn btn-primary ms-5" onClick={() => {setChanged(true)}}>Change</button>
+                    
+                    </span>
+
+                    </> : <><div>
+                      <input type={"text"} value={dv} onChange={(e) => {setDv(e.target.value)}} style={{width: "50px", height: "35px"}} />
+                      <button className="btn btn-primary ms-3" onClick={handleSubmit}>Change</button>
+                    </div></>}
                   </div>
                 </div>
                 <div class="row mb-7">

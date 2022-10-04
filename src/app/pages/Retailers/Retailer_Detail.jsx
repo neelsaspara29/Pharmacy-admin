@@ -59,8 +59,10 @@ const Retailer_Detail = () => {
       id: idValue,
     }).then((data) => {
       if (data.data.status == "200") {
-        console.log("blokdkdkdkdk", data.data.data.status);
+        console.log("blokdkdkdkdk", data.data);
         setStatus(data.data.data.status)
+        const idValue = queryString.parse(window.location.search);
+        fetchData(idValue.id);
                 
           
         SuccessToast("Retailer has been Successfully Approved" );
@@ -145,7 +147,7 @@ const Retailer_Detail = () => {
                     <div class="d-flex flex-column">
                       <div class="d-flex align-items-center mb-2">
                         <a class="text-gray-900 text-hover-primary fs-2 fw-bolder me-1">
-                          {Data.shopName}
+                          {Data.shopName }
                         </a>
                         <a>
                           <span class="svg-icon svg-icon-1 svg-icon-primary">
@@ -253,7 +255,7 @@ const Retailer_Detail = () => {
                     onClick={() => handleApproveUser()}
                     
                   >
-                    {status == 0 ? "Approve  User" : "Cancel Approve"}
+                    {status == 0 ? "Approve  User" : `Cancel Approve(${Data?.rId})`}
                   </button>
                 </div>
               </div>

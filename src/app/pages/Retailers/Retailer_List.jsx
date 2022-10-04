@@ -93,6 +93,30 @@ export default function Retailer_List() {
     //   sort: true,
     // },
     {
+      dataField: "rId",
+      text: "Retailer Id",
+      sort: true,
+      formatter: (cell, row) => {
+        console.log("row", row);
+        return (
+          <div
+            className="d-flex align-items-center"
+          // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+                {row?.rId ? `${row?.rId}` : "-"}
+              </a>
+            </div>
+          </div>
+        );
+      },
+      // sort: true,
+      //   sortCaret: sortCaret,
+      // headerSortingClasses,
+    },
+    {
       dataField: "shopName",
       text: "Name",
       sort: true,

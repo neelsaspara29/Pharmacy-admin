@@ -105,23 +105,37 @@ const Retailer_Edit = ({
   };
   const handleChange = (e) => {
     let { name, value } = e.target;
-
-    if(name !='image') {
-
-      if (value.length > 0) {
-        document.getElementById(`${name}`).style.border = "2px solid #1BC5BD";
-        // console.log("sssss");
-      } else {
-        document.getElementById(`${name}`).style.border = "2px solid #F64E60";
-        // console.log("rrr");
-      }
+    if (value.length > 0) {
+    //   document.getElementById("validID").style.border = "2px solid #1BC5BD";
+      // console.log("sssss");
+    } else {
+    //   document.getElementById("validID").style.border = "2px solid #F64E60";
+      // console.log("rrr");
     }
-   
+    if (name == "drugLicence" || name == "panCard" || name == "gst") {
+      let file = e.target.files[0];
+        let fileURL = URL.createObjectURL(file);
+        file.fileURL = fileURL;
+        let formData = new FormData();
+        formData.append("image", file);
+        console.log("run")
+        ApiUpload("upload/profile", formData)
+        .then((res) =>{
+  
+          console.log("image", res);
+        //   setImgUrl(res.data.data.image)
+        
+          setData((prevState) => ({
+            ...prevState,
+            [name]: res.data.data.image,
+          }));
+        })
+    } else {
       setData((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-    
+    }
   };
 
  
@@ -132,10 +146,21 @@ const Retailer_Edit = ({
       try {
         const body = {
           data: [{
-            shopName: data.shopName,
-            email: data.email,
-            businessType: data.businessType,
-            phoneNumber: data.phoneNumber
+            name: data?.name,
+            email: data?.email,
+            phoneNumber: data?.phoneNumber,
+            shopName: data?.shopName,
+            businessType: data?.businessType,
+            dDrugLicence : data?.dDrugLicence,
+            dGst : data?.dGst,
+            dPanCard : data?.dPanCard,
+            addName : data?.addName,
+            addMobile : data?.addMobile,
+            addStoreNumber  : data?.addStoreNumber,
+            addressLine : data?.addressLine,
+            gst: data?.gst,
+            drugLicence: data?.drugLicence,
+            panCard: data?.panCard
           }]
         };
         console.log(body);
@@ -249,15 +274,24 @@ const Retailer_Edit = ({
                 Bussiness Type
               </label>
               <div className="col-lg-8">
-                <input
-                  name="businessType"
-                  id="businessType"
-                  className="form-control"
-                  onChange={handleChange}
-                  value={data.businessType}
-                />
-                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
-              </div>
+
+              <Form.Group md="6">
+                        
+                      
+                      <Form.Control
+                        as="select"
+                        placeholder="select category"
+                            onChange={handleChange}
+                            name="businessType"
+                      >
+                        <option selected>Select Status</option>
+                         <option value="Chemist" >Chemist</option>
+                         <option value="Clinic"  >Clinic</option>
+                         <option value="Hospital"  >Hospital</option>
+                         <option value="Other"  >Other</option>
+                      </Form.Control>
+                    </Form.Group>
+                    </div>
             </div>
           </div>
             )}
@@ -382,6 +416,260 @@ const Retailer_Edit = ({
             </div>
           </div>
             )}
+            {modalState == 4 && (
+              <div class="card-body pt-9 pb-0 mx-0 px-0 ">
+            {/* <div className="mb-7 text-center d-flex flex-column align-center align-items-center overflow-scroll"> */}
+           
+            <div className="mb-7 text-center d-flex flex-row align-center align-items-center overflow-scroll">
+            {data?.drugLicence ? <div
+                              style={{
+                                marginRight: "auto",
+                                marginLeft: "auto",
+                                width: "135px",
+                                height: "135px",
+                                borderRadius: "12%",
+                                background: "#f3f3f3",
+                                position: "relative",
+                              }}
+                            >
+                          
+                              <iframe
+                                src={data?.drugLicence}
+                                alt="imgUrl"
+                                className="editImg"
+                                width={"130px"}
+                                height={"130px"}
+                                style={{ borderRadius: "12%" }}
+                              />
+                              <div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{color:'#3699FF'}}
+                                  onClick={()=>{}}
+                                >
+                                  <label htmlFor="drugLicence" role="button">
+                                    <FiEdit2
+                                      style={{
+                                        position: "absolute",
+                                        left: "-25px",
+                                        top: 0,
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%",
+                                        padding: "6px",
+                                        background: "transparent",
+                                      }}
+                                    />
+                                  </label>
+                                </div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{ color: "#3699FF" }}
+                                  onClick={() => {}}
+                                >
+                                  <AiTwotoneDelete
+                                    style={{
+                                      position: "absolute",
+                                      top: "30px",
+                                      left: "-25px",
+                                      borderRadius: "50%",
+                                      width: "30px",
+                                      height: "30px",
+                                      padding: "6px",
+                                      background: "transparent",
+                                    }}
+                                  ></AiTwotoneDelete>
+                                </div>
+                              </div>
+                            </div> : (
+
+            <><label htmlFor="drugLicence"
+                          style={{
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            width: "130px",
+                            height: "130px",
+                            borderRadius: "12%",
+                            background: "#f3f3f3",
+                            position: "relative",
+                          }}
+                        > select DrugLicence</label>
+                       <input
+                    type="file"
+                    name="drugLicence"
+                    id="drugLicence"
+                    hidden
+                    onChange={handleChange}
+                  />     
+                        </>
+            )}
+            {data?.panCard ? <div
+                              style={{
+                                marginRight: "auto",
+                                marginLeft: "auto",
+                                width: "135px",
+                                height: "135px",
+                                borderRadius: "12%",
+                                background: "#f3f3f3",
+                                position: "relative",
+                              }}
+                            >
+                          
+                              <iframe
+                                src={data?.panCard}
+                                alt="imgUrl"
+                                className="editImg"
+                                width={"130px"}
+                                height={"130px"}
+                                style={{ borderRadius: "12%" }}
+                              />
+                              <div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{color:'#3699FF'}}
+                                  onClick={()=>{}}
+                                >
+                                  <label htmlFor="panCard" role="button">
+                                    <FiEdit2
+                                      style={{
+                                        position: "absolute",
+                                        left: "-25px",
+                                        top: 0,
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%",
+                                        padding: "6px",
+                                        background: "transparent",
+                                      }}
+                                    />
+                                  </label>
+                                </div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{ color: "#3699FF" }}
+                                  onClick={() => {}}
+                                >
+                                  <AiTwotoneDelete
+                                    style={{
+                                      position: "absolute",
+                                      top: "30px",
+                                      left: "-25px",
+                                      borderRadius: "50%",
+                                      width: "30px",
+                                      height: "30px",
+                                      padding: "6px",
+                                      background: "transparent",
+                                    }}
+                                  ></AiTwotoneDelete>
+                                </div>
+                              </div>
+                            </div> : (
+
+           <> <label htmlFor="panCard"
+                          style={{
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            width: "130px",
+                            height: "130px",
+                            borderRadius: "12%",
+                            background: "#f3f3f3",
+                            position: "relative",
+                          }}
+                        > select Pancard</label>
+                        <input
+                    type="file"
+                    name="panCard"
+                    id="panCard"
+                    hidden
+                    onChange={handleChange}
+                  />
+                        </>
+                        
+            )}
+            {data?.gst ? <div
+                              style={{
+                                marginRight: "auto",
+                                marginLeft: "auto",
+                                width: "135px",
+                                height: "135px",
+                                borderRadius: "12%",
+                                background: "#f3f3f3",
+                                position: "relative",
+                              }}
+                            >
+                          
+                              <iframe
+                                src={data?.gst}
+                                alt="imgUrl"
+                                className="editImg"
+                                width={"130px"}
+                                height={"130px"}
+                                style={{ borderRadius: "12%" }}
+                              />
+                              <div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{color:'#3699FF'}}
+                                  onClick={()=>{}}
+                                >
+                                  <label htmlFor="gst" role="button">
+                                    <FiEdit2
+                                      style={{
+                                        position: "absolute",
+                                        left: "-25px",
+                                        top: 0,
+                                        width: "30px",
+                                        height: "30px",
+                                        borderRadius: "50%",
+                                        padding: "6px",
+                                        background: "transparent",
+                                      }}
+                                    />
+                                  </label>
+                                </div>
+                                <div
+                                  className="cursor-pointer"
+                                  style={{ color: "#3699FF" }}
+                                  onClick={() => {}}
+                                >
+                                  <AiTwotoneDelete
+                                    style={{
+                                      position: "absolute",
+                                      top: "30px",
+                                      left: "-25px",
+                                      borderRadius: "50%",
+                                      width: "30px",
+                                      height: "30px",
+                                      padding: "6px",
+                                      background: "transparent",
+                                    }}
+                                  ></AiTwotoneDelete>
+                                </div>
+                              </div>
+                            </div> : (
+
+            <label htmlFor="gst"
+                          style={{
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            width: "130px",
+                            height: "130px",
+                            borderRadius: "12%",
+                            background: "#f3f3f3",
+                            position: "relative",
+                          }}
+                        > select gstNumber</label>
+            )}
+                        <input
+                    type="file"
+                    name="gst"
+                    id="gst"
+                    hidden
+                    onChange={handleChange}
+                  />
+            </div>
+          </div>
+            )}
           
           </Modal.Body>
           <Modal.Footer>
@@ -407,7 +695,7 @@ const Retailer_Edit = ({
                   Cancel
                 </button>
 
-                {modalState != 3 ? (
+                {modalState != 4 ? (
                   <button
                     type="submit"
                     onClick={() => {
@@ -426,7 +714,7 @@ const Retailer_Edit = ({
                     // disabled={button}
                     className="btn btn-primary btn-elevate"
                   >
-                    UPDATE
+                    Submit
                   </button>
                 )}
               </div>

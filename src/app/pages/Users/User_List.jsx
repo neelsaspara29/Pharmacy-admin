@@ -328,9 +328,9 @@ export default function User_List() {
   const handleTagShow = (e) => {
     const tags_show = document.getElementById("tags_show");
     if (e.key == "Enter") {
-      tags_show.innerHTML += `<span class='p-1  bg-success m-2'># ${e.target.value}</span>`;
+      tags_show.innerHTML += `<span class='p-2  bg-success m-2'># ${e.target.value}</span>`;
       setTagArr([...tagArr, e.target.value]);
-      setAddData({...addData,tags:""})
+      setAddData({ ...addData, tags: "" });
     }
   };
   const imageMainhandle = async (e) => {
@@ -346,7 +346,7 @@ export default function User_List() {
         setAddData({ ...addData, [name]: this.result });
         mainimage.innerHTML =
           '<img src="' + this.result + '" width=160px  height=140px />';
-        
+
         let file = files;
         let fileURL = URL.createObjectURL(file);
         file.fileURL = fileURL;
@@ -360,7 +360,7 @@ export default function User_List() {
       });
     }
   };
-  const imageGallaryhandle =async (e) => {
+  const imageGallaryhandle = async (e) => {
     let img_array = e.target.files;
     const gallaryimage = document.getElementById("gallaryimage");
     gallaryimage.style.display = "block";
@@ -387,88 +387,80 @@ export default function User_List() {
 
     let temp_1 = [];
     for (let i = 0; i < temp.length; i++) {
-     let file = temp[i];
+      let file = temp[i];
       let fileURL = URL.createObjectURL(file);
       file.fileURL = fileURL;
-     let formData = new FormData();
+      let formData = new FormData();
       formData.append("image", file);
       await ApiUpload("upload/profile", formData)
         .then((res) => {
-        temp_1.push(res.data.data.image)
+          temp_1.push(res.data.data.image);
         })
         .catch((err) => console.log("res_blob", err));
     }
     setGimages(temp_1);
-   
   };
 
   const handleSelectOrder = (e) => {
-
     let name = e.target.value;
-    if (sorted==1 && (name == "Decreasing")) {
+    if (sorted == 1 && name == "Decreasing") {
       let temp = data;
       temp.reverse();
       setData([...temp]);
-      setSorted(2)
-    }
-    else if (sorted==2 && (name == "Increasing")) {
+      setSorted(2);
+    } else if (sorted == 2 && name == "Increasing") {
       let temp = data;
       temp.reverse();
       setData([...temp]);
       setSorted(1);
-      
     }
-   };
+  };
   const hide = () => {
     setEditModal(!editModal);
-   }
+  };
 
   const fetchData = async (page, limit, search, cid) => {
     let body = {
       search,
       page,
       limit,
-      
     };
-    if(cid) {
-      body.categories = [cid] 
+    if (cid) {
+      body.categories = [cid];
     }
 
-   
-
-    await ApiPost("/medicine/get",body)
+    await ApiPost("/medicine/get", body)
       .then((res) => {
-        console.log(res?.data?.data)
+        console.log(res?.data?.data);
         setData(res?.data?.data?.medicinesData);
         setMainData(res?.data?.data?.medicinesData);
         settotalpage(res?.data?.data?.state?.page_limit);
         setcurrentpage(res?.data?.data?.state?.page);
         setpagesize(res?.data?.data?.state?.limit);
-        firstSearch = true
+        firstSearch = true;
       })
       .catch(async (err) => {
-        if(firstSearch) {
+        if (firstSearch) {
           ErrorToast(err?.message);
           firstSearch = false;
         }
-        setData([])
+        setData([]);
       });
-    
+
     // setData(arr);
     // setMainData(arr);
     // setData([...data,
-      
+
     // ]);
   };
 
   const handleSelectCategory = (e) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     fetchData(currentpage, pagesize, searching, e.target.value);
-    
-  }
+  };
   const fetchCategory = async () => {
     await ApiPost("/category/get").then((res) => {
-      setCategory(res.data.data)
+      setCategory(res.data.data);
     });
   };
 
@@ -546,9 +538,8 @@ export default function User_List() {
                             <i class="flaticon2-search-1 text-muted"></i>
                           </span>
                         </div>
-                        
                       </div>
-                     
+
                       <div class="col-md-4 my-2 my-md-0">
                         <select
                           name=""
@@ -557,27 +548,23 @@ export default function User_List() {
                           onChange={handleSelectCategory}
                         >
                           <option value="">Select Category</option>
-                            {
-                              category.map((item) => {
-                                return (
-                                  <option value={item._id}>{item.name}</option>
-                                )
-                              })
-                            }
-                         
-                            {/* <option value="price">Price</option>
+                          {category.map((item) => {
+                            return (
+                              <option value={item._id}>{item.name}</option>
+                            );
+                          })}
+
+                          {/* <option value="price">Price</option>
                             <option value="date">Date</option>
                             <option value="category">Category</option>
                             <option value="stock">Stocks</option> */}
-                        
                         </select>
                       </div>
-                      
-                    </div>
                     </div>
                   </div>
                 </div>
-              
+              </div>
+
               <BootstrapTable
                 wrapperClasses="table-responsive"
                 bordered={false}
@@ -597,7 +584,7 @@ export default function User_List() {
                 <div className="my-2">
                   <Pagination
                     count={totalpage}
-                    page={currentpage} 
+                    page={currentpage}
                     onChange={handleChange}
                     variant="outlined"
                     shape="rounded"
@@ -625,24 +612,24 @@ export default function User_List() {
         </div>
       </div>
       <div className="modal1">
-      <Modal
-        show={modal}
-        centered
-        size="lg"
-        onHide={() => setModal(!modal)}
-        aria-labelledby="example-modal-sizes-title-lg"
-        contentClassName="modaldailog"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="example-modal-sizes-title-lg">
-            Medicine Details
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="overlay overlay-block cursor-default">
-          {modalState == 1 && (
-            <div className="form-group row">
-              <div className="col-lg-12">
-              <Form.Group md="6">
+        <Modal
+          show={modal}
+          centered
+          size="lg"
+          onHide={() => setModal(!modal)}
+          aria-labelledby="example-modal-sizes-title-lg"
+          contentClassName="modaldailog"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="example-modal-sizes-title-lg">
+              Medicine Details
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="overlay overlay-block cursor-default">
+            {modalState == 1 && (
+              <div className="form-group row">
+                <div className="col-lg-12">
+                  <Form.Group md="6">
                     <Form.Label>Batch No.</Form.Label>
                     <Form.Control
                       type="text"
@@ -657,451 +644,507 @@ export default function User_List() {
 
                     <span className="errorInput"></span>
                   </Form.Group>
-                <Form.Group md="6">
-                  <Form.Label>Medicine Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="name"
-                    label="Medicinename"
-                    required
-                    name="name"
-                    onChange={handleChange}
-                    value={addData.name}
-                    placeholder="Name Of Medecine"
-                  />
+                  <Form.Group md="6">
+                    <Form.Label>Medicine Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      id="name"
+                      label="Medicinename"
+                      required
+                      name="name"
+                      onChange={handleChange}
+                      value={addData.name}
+                      placeholder="Name Of Medecine"
+                    />
 
-                  <span className="errorInput"></span>
-                </Form.Group>
-                <Form.Group
-                  className="mt-6"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Label>Medicine Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    name="description"
-                    rows={6}
-                    onChange={handleChange}
-                    value={addData.description}
-                    placeholder="Provide Description Of Medicine"
-                  />
-                </Form.Group>
-              </div>
-            </div>
-          )}
-          {modalState == 2 && (
-            <div className="form-group row">
-              <div className="col-lg-12">
-                <div className="fs-7">Add Product Main Image</div>
-                <label
-                  htmlFor="oneFile"
-                  className=" h-150px w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
-                  role="button"
-                >
-                  <div id="mainimage" className="fs-10">
-                   {isPrev? mainImg?<img src={mainImg} width={160} height={140}/>:"Click To Add Image"  :" Click To Add Image"}
-                  </div>
-                </label>
-              </div>
-              
-
-              <input
-                type="file"
-                name="mainImage"
-                id="oneFile"
-                hidden
-                accept="image/*"
-                onChange={imageMainhandle}
-              />
-              
-            </div>
-          )}
-          {modalState == 3 && (
-            <div className="form-group row">
-              <div class="container">
-                <div class="row justify-content-between">
-                  <div class="col-6" style={{position: "relative"}}>
-                    <Form.Group>
-                      <Form.Label>Manufacturer Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="name"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="Manufacturer Name"
-                        required
-                        name="manufacturerName"
-                        onChange={handleChange}
-                        value={addData.manufacturerName}
-                      />
-                      <div style={{position: "absolute", top: "68px", background:"lightGray", width: "352px", zIndex: "10", borderRadius: "3px"}}>
-                        {mnameSuggestion.map((item) => {
-                          return (
-                            <>
-                              <div style={{padding: "10px", borderBottom: "1px solid gray", cursor: "pointer"}} onClick={() => {onMnameSuggestionClick(item)}}>{item}</div>
-                            </>
-                          )
-                        } )}
-                      </div>
-
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>Pack</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="packID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="pack"
-                        required
-                        name="pack"
-                        onChange={handleChange}
-                        value={addData.pack}
-                      />
-
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>PTR</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="ptrID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="ptr"
-                        required
-                        name="ptr"
-                        onChange={handleChange}
-                        value={addData.ptr}
-                      />
-
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
+                    <span className="errorInput"></span>
+                  </Form.Group>
+                  <Form.Group
+                    className="mt-6"
+                    controlId="exampleForm.ControlTextarea1"
+                  >
+                    <Form.Label>Medicine Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      name="description"
+                      rows={6}
+                      onChange={handleChange}
+                      value={addData.description}
+                      placeholder="Provide Description Of Medicine"
+                    />
+                  </Form.Group>
                 </div>
-                <div class="row justify-content-between">
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>Stocks</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="stocksID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="stocks"
-                        required
-                        name="stocks"
-                        onChange={handleChange}
-                        value={addData.stocks}
-                      />
+              </div>
+            )}
+            {modalState == 2 && (
+              <div className="form-group row">
+                <div className="col-lg-12">
+                  <div className="fs-7">Add Product Main Image</div>
+                  <label
+                    htmlFor="oneFile"
+                    className=" h-150px w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
+                    role="button"
+                  >
+                    <div id="mainimage" className="fs-10">
+                      {isPrev ? (
+                        mainImg ? (
+                          <img src={mainImg} width={160} height={140} />
+                        ) : (
+                          "Click To Add Image"
+                        )
+                      ) : (
+                        " Click To Add Image"
+                      )}
+                    </div>
+                  </label>
+                </div>
+                <div className="col-lg-12 mt-10">
+                  <div className="fs-7">Add Product Gallary Images</div>
+                  <label
+                    htmlFor="multyFile"
+                    className=" h-150px  w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
+                    role="button"
+                  >
+                    <div
+                      id="gallaryimage"
+                      className=" d-flex justify-content-center align-items-center"
+                      style={{ fontSize: "6px !importanat" }}
+                    >
+                      {isPrev
+                        ? gimages.length != 0
+                          ? gimages.map((src) => (
+                              <img src={src} width={160} height={140} />
+                            ))
+                          : "Click To Add Image"
+                        : " Click To Add Image"}
+                    </div>
+                  </label>
+                </div>
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>MRP</Form.Label>
-                      <div className="d-flex">
-                        <div
-                          className="d-flex justify-content-center align-items-center position-relative  "
-                          style={{
-                            background: "#f3f6f9",
-                            width: "40px",
-                            zIndex: "2",
-                            left: "4px",
-                          }}
-                        >
-                          <div>$</div>
-                        </div>
+                <input
+                  type="file"
+                  name="mainImage"
+                  id="oneFile"
+                  hidden
+                  accept="image/*"
+                  onChange={imageMainhandle}
+                />
+                <input
+                  type="file"
+                  name="images"
+                  id="multyFile"
+                  hidden
+                  multiple="multiple"
+                  accept="image/*"
+                  onChange={imageGallaryhandle}
+                />
+              </div>
+            )}
+            {modalState == 3 && (
+              <div className="form-group row">
+                <div class="container">
+                  <div class="row justify-content-between">
+                    <div class="col-6" style={{ position: "relative" }}>
+                      <Form.Group>
+                        <Form.Label>Manufacturer Name</Form.Label>
                         <Form.Control
                           type="text"
-                          id="mrpID"
+                          id="name"
                           // className={errors["name"] && "chipInputRed"}
-                          label="mrp"
+                          label="Manufacturer Name"
                           required
-                          name="mrp"
+                          name="manufacturerName"
                           onChange={handleChange}
-                          value={addData.mrp}
-                          className="position-relative"
+                          value={addData.manufacturerName}
                         />
-                      </div>
-                    </Form.Group>
-                  </div>
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>Marginal Discount</Form.Label>
-                      <div className="d-flex">
                         <div
-                          className="d-flex justify-content-center align-items-center position-relative  "
                           style={{
-                            background: "#f3f6f9",
-                            width: "40px",
-                            zIndex: "2",
-                            left: "4px",
+                            position: "absolute",
+                            top: "68px",
+                            background: "lightGray",
+                            width: "352px",
+                            zIndex: "10",
+                            borderRadius: "3px",
                           }}
                         >
-                          <div>%</div>
+                          {mnameSuggestion.map((item) => {
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    padding: "10px",
+                                    borderBottom: "1px solid gray",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    onMnameSuggestionClick(item);
+                                  }}
+                                >
+                                  {item}
+                                </div>
+                              </>
+                            );
+                          })}
                         </div>
+
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>Pack</Form.Label>
                         <Form.Control
                           type="text"
-                          id="discountID"
+                          id="packID"
                           // className={errors["name"] && "chipInputRed"}
-                          label="discount"
+                          label="pack"
                           required
-                          name="marginalDiscount"
+                          name="pack"
                           onChange={handleChange}
-                          value={addData.marginalDiscount}
+                          value={addData.pack}
                         />
-                      </div>
-                    </Form.Group>
-                  </div>
-                  <div class="col-3">
-                    <Form.Group>
-                      <Form.Label>Scheme</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="scemeID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="scheme"
-                        required
-                        name="Scheme"
-                        onChange={handleChange}
-                        value={addData.Scheme}
-                      />
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>PTR</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="ptrID"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="ptr"
+                          required
+                          name="ptr"
+                          onChange={handleChange}
+                          value={addData.ptr}
+                        />
+
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                  </div>
+                  <div class="row justify-content-between">
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>Stocks</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="stocksID"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="stocks"
+                          required
+                          name="stocks"
+                          onChange={handleChange}
+                          value={addData.stocks}
+                        />
+
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>MRP</Form.Label>
+                        <div className="d-flex">
+                          <div
+                            className="d-flex justify-content-center align-items-center position-relative  "
+                            style={{
+                              background: "#f3f6f9",
+                              width: "40px",
+                              zIndex: "2",
+                              left: "4px",
+                            }}
+                          >
+                            <div>$</div>
+                          </div>
+                          <Form.Control
+                            type="text"
+                            id="mrpID"
+                            // className={errors["name"] && "chipInputRed"}
+                            label="mrp"
+                            required
+                            name="mrp"
+                            onChange={handleChange}
+                            value={addData.mrp}
+                            className="position-relative"
+                          />
+                        </div>
+                      </Form.Group>
+                    </div>
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>Marginal Discount</Form.Label>
+                        <div className="d-flex">
+                          <div
+                            className="d-flex justify-content-center align-items-center position-relative  "
+                            style={{
+                              background: "#f3f6f9",
+                              width: "40px",
+                              zIndex: "2",
+                              left: "4px",
+                            }}
+                          >
+                            <div>%</div>
+                          </div>
+                          <Form.Control
+                            type="text"
+                            id="discountID"
+                            // className={errors["name"] && "chipInputRed"}
+                            label="discount"
+                            required
+                            name="marginalDiscount"
+                            onChange={handleChange}
+                            value={addData.marginalDiscount}
+                          />
+                        </div>
+                      </Form.Group>
+                    </div>
+                    <div class="col-3">
+                      <Form.Group>
+                        <Form.Label>Scheme</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="scemeID"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="scheme"
+                          required
+                          name="Scheme"
+                          onChange={handleChange}
+                          value={addData.Scheme}
+                        />
+
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-          {modalState == 4 && (
-            <div className="form-group row">
-              <div className="container">
-                <div className="row justify-content-between">
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>Chemical Composition</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="compositionID"
-                        // className={errors["name"] && "chipInputRed"}
-                        placeholder="Add chemical composition for product"
-                        label="Chemical"
-                        required
-                        name="chemicalComposition"
-                        onChange={handleChange}
-                        value={addData.chemicalComposition}
-                      />
+            )}
+            {modalState == 4 && (
+              <div className="form-group row">
+                <div className="container">
+                  <div className="row justify-content-between">
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>Chemical Composition</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="compositionID"
+                          // className={errors["name"] && "chipInputRed"}
+                          placeholder="Add chemical composition for product"
+                          label="Chemical"
+                          required
+                          name="chemicalComposition"
+                          onChange={handleChange}
+                          value={addData.chemicalComposition}
+                        />
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>HSN Code</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="hsnID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="hsn"
-                        required
-                        name="hsnCode"
-                        placeholder="Enter HSN Code Of Medicine"
-                        onChange={handleChange}
-                        value={addData.hsnCode}
-                      />
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>HSN Code</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="hsnID"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="hsn"
+                          required
+                          name="hsnCode"
+                          placeholder="Enter HSN Code Of Medicine"
+                          onChange={handleChange}
+                          value={addData.hsnCode}
+                        />
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
                   </div>
-                </div>
-                <div className="row justify-content-between">
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>Product Categories</Form.Label>
-                      <Form.Control
-                        as="select"
-                        placeholder="select category"
-                        onChange={handleCatchange}
-                      >
-                        <option>Select Category</option>
-                        {category.map((data) => (
-                          <option data-id={data._id}>{data.name}</option>
-                        ))}
-                      </Form.Control>
-                    </Form.Group>
+                  <div className="row justify-content-between">
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>Product Categories</Form.Label>
+                        <Form.Control
+                          as="select"
+                          placeholder="select category"
+                          onChange={handleCatchange}
+                        >
+                          <option>Select Category</option>
+                          {category.map((data) => (
+                            <option data-id={data._id}>{data.name}</option>
+                          ))}
+                        </Form.Control>
+                      </Form.Group>
+                    </div>
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>&nbsp;</Form.Label>
+                        <Form.Control
+                          as="text"
+                          id="category_show"
+                          readOnly
+                        ></Form.Control>
+                      </Form.Group>
+                    </div>
                   </div>
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>&nbsp;</Form.Label>
-                      <Form.Control
-                        as="text"
-                        id="category_show"
-                        readOnly
-                      ></Form.Control>
-                    </Form.Group>
-                  </div>
-                </div>
-                <div className="row justify-content-between">
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>Product tags</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="tagsID"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="tags"
-                        required
-                        name="tags"
-                        placeholder="Select Product Tag"
-                        onChange={handleChange}
-                        value={addData.tags}
-                        onKeyDown={handleTagShow}
-                      />
+                  <div className="row justify-content-between">
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>Product tags</Form.Label>
+                        <Form.Control
+                          as="text"
+                          id="tagsID"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="tags"
+                          required
+                          name="tags"
+                          placeholder="Select Product Tag"
+                          onChange={handleChange}
+                          value={addData.tags}
+                          onKeyDown={handleTagShow}
+                        />
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div className="col-6">
+                      <Form.Group>
+                        <Form.Label>&nbsp;</Form.Label>
+                        <Form.Control
+                          as="text"
+                          id="tags_show"
+                          readOnly
+                        ></Form.Control>
+                      </Form.Group>
+                    </div>
                   </div>
-                  <div className="col-6">
-                    <Form.Group>
-                      <Form.Label>&nbsp;</Form.Label>
-                      <Form.Control
-                        as="text"
-                        id="tags_show"
-                        readOnly
-                      ></Form.Control>
-                    </Form.Group>
-                  </div>
-                </div>
-                <div className="row justify-content-start mt-6">
-                  <div className="col-8">
-                    <Form.Group>
-                      <Form.Label>Product Short Description</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={6}
-                        value={addData.ShortDesc}
-                        name="ShortDesc"
-                        onChange={handleChange}
-                        placeholder="Add short description for product"
-                      />
+                  <div className="row justify-content-start mt-6">
+                    <div className="col-8">
+                      <Form.Group>
+                        <Form.Label>Product Short Description</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={6}
+                          value={addData.ShortDesc}
+                          name="ShortDesc"
+                          onChange={handleChange}
+                          placeholder="Add short description for product"
+                        />
 
-                      <span className="errorInput">
-                        {/* {data.name?.length > 0 ? "" : errors["name"]} */}
-                      </span>
-                    </Form.Group>
-                  </div>
-                  <div className="col-4">
-                    <Form.Group md="6">
-                      <Form.Label>Gst</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="gst"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="tags"
-                        required
-                        name="gst"
-                        placeholder="Gst Detail"
-                        onChange={handleChange}
-                        value={addData.gst}
-                      />
-                    </Form.Group>
-                  {/* </div>
+                        <span className="errorInput">
+                          {/* {data.name?.length > 0 ? "" : errors["name"]} */}
+                        </span>
+                      </Form.Group>
+                    </div>
+                    <div className="col-4">
+                      <Form.Group md="6">
+                        <Form.Label>Gst</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="gst"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="tags"
+                          required
+                          name="gst"
+                          placeholder="Gst Detail"
+                          onChange={handleChange}
+                          value={addData.gst}
+                        />
+                      </Form.Group>
+                      {/* </div>
                   <div className="col-4"> */}
-                    <Form.Group md="6">
-                      <Form.Label>Publish</Form.Label>
-                      <Form.Control
-                        as="select"
-                        placeholder="select category"
-                        onChange={handleChange}
-                        name="status"
-                      >
-                        <option>Select Status</option>
+                      <Form.Group md="6">
+                        <Form.Label>Publish</Form.Label>
+                        <Form.Control
+                          as="select"
+                          placeholder="select category"
+                          onChange={handleChange}
+                          name="status"
+                        >
+                          <option>Select Status</option>
                           <option value="true">Public</option>
                           <option value="false">Draft</option>
-                      </Form.Control>
-                    </Form.Group>
+                        </Form.Control>
+                      </Form.Group>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <div className="d-flex justify-content-between w-100 ">
-            <button
-              type="submit"
-              onClick={() => {
-
-                setModalState(modalState - 1);
-                setIsPrev(true);
-              }}
-              // disabled={button}
-              className={`btn btn-primary btn-elevate ${
-                modalState == 1 ? "invisible" : "visible"
-              }`}
-            >
-              PREV
-            </button>
-            <div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <div className="d-flex justify-content-between w-100 ">
               <button
-                type="button"
-                onClick={() => setModal(!modal)}
-                className="btn btn-light btn-elevate mr-2"
+                type="submit"
+                onClick={() => {
+                  setModalState(modalState - 1);
+                  setIsPrev(true);
+                }}
+                // disabled={button}
+                className={`btn btn-primary btn-elevate ${
+                  modalState == 1 ? "invisible" : "visible"
+                }`}
               >
-                CANCEL
+                PREV
               </button>
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setModal(!modal)}
+                  className="btn btn-light btn-elevate mr-2"
+                >
+                  CANCEL
+                </button>
 
-              {modalState != 4 ? (
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setModalState(modalState + 1);
-                    setIsPrev(false);
-                  }}
-                  className="btn btn-primary btn-elevate"
-                >
-                  NEXT
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  onClick={handleAddMedicineSubmit}
-                  // disabled={button}
-                  className="btn btn-primary btn-elevate"
-                >
-                  Submit
-                </button>
-              )}
+                {modalState != 4 ? (
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      setModalState(modalState + 1);
+                      setIsPrev(false);
+                    }}
+                    className="btn btn-primary btn-elevate"
+                  >
+                    NEXT
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    onClick={handleAddMedicineSubmit}
+                    // disabled={button}
+                    className="btn btn-primary btn-elevate"
+                  >
+                    Submit
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </Modal.Footer>
+          </Modal.Footer>
         </Modal>
-        </div>
+      </div>
       <Modal
         centered
         show={delet}
         onHide={() => {
-          setDelet(!delet)
+          setDelet(!delet);
           setDeletId("");
         }}
         aria-labelledby="example-modal-sizes-title-lg"
@@ -1121,7 +1164,7 @@ export default function User_List() {
             <button
               type="button"
               onClick={() => {
-                setDelet(!delet)
+                setDelet(!delet);
                 setDeletId("");
               }}
               className="btn btn-light btn-elevate"
@@ -1139,9 +1182,18 @@ export default function User_List() {
           </div>
         </Modal.Footer>
       </Modal>
-      {editModal && <MedicineEdit hide={hide} data={editData} state={editModal} category={category} fetchData={fetchData} currentpage = {currentpage} pagesize = {pagesize} searching = {searching} ></MedicineEdit>}
-     
-      
+      {editModal && (
+        <MedicineEdit
+          hide={hide}
+          data={editData}
+          state={editModal}
+          category={category}
+          fetchData={fetchData}
+          currentpage={currentpage}
+          pagesize={pagesize}
+          searching={searching}
+        ></MedicineEdit>
+      )}
     </>
   );
 }

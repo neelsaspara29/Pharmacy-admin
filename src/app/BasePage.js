@@ -40,9 +40,9 @@ export default function BasePage() {
 
         <ContentRoute path="/orders" component={Orders} />
         <ContentRoute
-          path="/order?id=:id"
+          path="/order"
           component={Order}
-        />
+        />  
 
         <ContentRoute path="/category" component={Category_List} />
 

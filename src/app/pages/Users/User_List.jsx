@@ -703,23 +703,7 @@ export default function User_List() {
                   </div>
                 </label>
               </div>
-              <div className="col-lg-12 mt-10">
-                <div className="fs-7">Add Product Gallary Images</div>
-                <label
-                  htmlFor="multyFile"
-                  className=" h-150px  w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
-                  role="button"
-                >
-                  <div
-                    id="gallaryimage"
-                    className=" d-flex justify-content-center align-items-center"
-                    style={{fontSize:'6px !importanat'}}
-                  >
-                   {isPrev? gimages.length !=0 ? gimages.map((src)=><img src={src} width={160} height={140}/>) :"Click To Add Image"  :" Click To Add Image"}
-
-                  </div>
-                </label>
-              </div>
+              
 
               <input
                 type="file"
@@ -729,15 +713,7 @@ export default function User_List() {
                 accept="image/*"
                 onChange={imageMainhandle}
               />
-              <input
-                type="file"
-                name="images"
-                id="multyFile"
-                hidden
-                multiple="multiple"
-                accept="image/*"
-                onChange={imageGallaryhandle}
-              />
+              
             </div>
           )}
           {modalState == 3 && (

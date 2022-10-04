@@ -93,13 +93,13 @@ const Offer_Edit = ({
 
     if(name !='image') {
 
-      if (value.length > 0) {
-        document.getElementById(`${name}`).style.border = "2px solid #1BC5BD";
-        // console.log("sssss");
-      } else {
-        document.getElementById(`${name}`).style.border = "2px solid #F64E60";
-        // console.log("rrr");
-      }
+      // if (value.length > 0) {
+      //   document.getElementById(`${name}`).style.border = "2px solid #1BC5BD";
+      //   // console.log("sssss");
+      // } else {
+      //   document.getElementById(`${name}`).style.border = "2px solid #F64E60";
+      //   // console.log("rrr");
+      // }
     }
     if (name == "image") {
       let file = e.target.files[0];
@@ -156,10 +156,10 @@ const Offer_Edit = ({
       try {
         const body = {
           id:rowID ,
-          name: data.name,
+  
           description: data.description,
           image: String(imgUrl),
-          tags: data.tags,
+          status: data?.status
         };
         console.log(body);
         ApiPut("/banner/update", body)
@@ -195,10 +195,10 @@ const Offer_Edit = ({
       setbutton(true);
       try {
         const body = {
-          name: data.name,
+          
           description: data.description,
           image: imgUrl,
-          tags: [data.tags],
+          status: data?.status
         };
         console.log(body);
         ApiPost("/banner/add", body)
@@ -340,6 +340,41 @@ const Offer_Edit = ({
                     hidden
                     onChange={handleChange}
                   />
+            </div>
+
+            {/* <Form.Group md="6">
+                        <Form.Label>Status</Form.Label>
+                        <Form.Group md="6">
+                      
+                      <Form.Control
+                        as="select"
+                        placeholder="select category"
+                            onChange={handleChange}
+                            name="status"
+                      >
+                        <option>Select Status</option>
+                         { data?.status==true?<option value="true" selected>Public</option>:<option value="true"  >Public</option>}
+                         { data?.status==false?<option value="false" selected>Draft</option>:<option value="false"  >Draft</option>}
+                      </Form.Control>
+                    </Form.Group>
+                    </Form.Group> */}
+                    <div class="row mb-7">
+              <label class="col-lg-4 fw-bold text-muted">
+                Status
+              </label>
+              <div className="col-lg-8">
+              <Form.Control
+                        as="select"
+                        placeholder="select category"
+                            onChange={handleChange}
+                            name="status"
+                      >
+                        <option>Select Status</option>
+                         { data?.status==true?<option value="true" selected>Public</option>:<option value="true"  >Public</option>}
+                         { data?.status==false?<option value="false" selected>Draft</option>:<option value="false"  >Draft</option>}
+                      </Form.Control>
+                {/* <input type="textarea" name="lastName" className="form-control"  onChange={handleChange} /> */}
+              </div>
             </div>
             
             

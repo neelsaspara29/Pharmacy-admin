@@ -174,6 +174,30 @@ export default function Offer_List() {
       // headerSortingClasses,
     },
     {
+      dataField: "status",
+      text: "status",
+      sort: true,
+      formatter: (cell, row) => {
+        //
+        console.log("row", row);
+        return (
+          <div
+            className="d-flex align-items-center"
+            // onClick={() => history.push(`/user_details?id=${row._id}`)}
+          >
+            <div>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                {row?.status ? "Public" : "Draft"}
+              </a>
+            </div>
+          </div>
+        );
+      },
+      // sort: true,
+      //   sortCaret: sortCaret,
+      // headerSortingClasses,
+    },
+    {
       dataField: "createdAt",
       text: "Created At",
       sort: true,

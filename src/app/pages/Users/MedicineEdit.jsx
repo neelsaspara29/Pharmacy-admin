@@ -228,26 +228,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                     </div>
                   </label>
                 </div>
-                <div className="col-lg-12 mt-10">
-                  <div className="fs-7">Add Product Gallary Images</div>
-                  <label
-                    htmlFor="multyFile"
-                    className=" h-150px  w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
-                    role="button"
-                  >
-                    <div
-                      id="gallaryimage"
-                      className=" d-flex justify-content-center align-items-center"
-                      style={{ fontSize: "6px !importanat" }}
-                    >
-                      {data.images &&
-                        data.images.map((src) => {
-                          console.log(src);
-                          return <img src={src} width={160} height={140} />;
-                        })}
-                    </div>
-                  </label>
-                </div>
+              
 
                 <input
                   type="file"
@@ -257,15 +238,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                   accept="image/*"
                   onChange={imageMainhandle}
                 />
-                <input
-                  type="file"
-                  name="images"
-                  id="multyFile"
-                  hidden
-                  multiple="multiple"
-                  accept="image/*"
-                  onChange={imageGallaryhandle}
-                />
+                
               </div>
             )}
             {modalState == 3 && (

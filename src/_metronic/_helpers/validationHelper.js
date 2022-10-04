@@ -11,10 +11,6 @@ const validationMedicineData = (obj) => {
     if (!images)
     return {res:"Main Image Is Required(which will show will displaying medicine)",state:2};
 
-
-    let Gimages = obj.images;
-    if (!(Gimages.length))
-        return {res:"Plz Provide Product Gallary Images",state:2};
     
     let manname = obj.manufacturerName;
     if (!manname)

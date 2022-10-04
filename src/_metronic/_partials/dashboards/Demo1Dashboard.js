@@ -25,7 +25,7 @@ export function Demo1Dashboard() {
         // console.log("body out");
         let body = {
             
-           timePeriod : 2
+           timePeriod : time
             
         };
     
@@ -41,7 +41,7 @@ export function Demo1Dashboard() {
       };
     useEffect(() => {
             fetchData()
-    },[])
+    },[time])
   return (
     <>
       <div className="row">
@@ -128,7 +128,7 @@ export function Demo1Dashboard() {
                   </div>
                   <div class="flex-fill ms-3 text-truncate">
                     <div class="h6 mb-0">Processing Orders</div>
-                    <span class="small" style={{fontSize: "20px"}}>{Data?.inTransitOrders}</span>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.processingOrders}</span>
                   </div>
                 </div>
               </div>
@@ -141,7 +141,7 @@ export function Demo1Dashboard() {
                   </div>
                   <div class="flex-fill ms-3 text-truncate">
                     <div class="h6 mb-0">Total Sales</div>
-                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales[0]?.TotalSum}</span>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales}</span>
                   </div>
                 </div>
               </div>
@@ -154,7 +154,7 @@ export function Demo1Dashboard() {
                   </div>
                   <div class="flex-fill ms-3 text-truncate">
                     <div class="h6 mb-0">Pending Invoice</div>
-                    <span class="small" style={{fontSize: "20px"}}>{Data?.pendingOrders}</span>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.pendingInvoice}</span>
                   </div>
                 </div>
               </div>
@@ -182,7 +182,7 @@ export function Demo1Dashboard() {
                       <div class="left-info">
                         <span class="text-muted">Active Retailer</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">74,208</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.activeRetailers}</span>
                         </div>
                       </div>
                       <div class="right-icon">
@@ -197,7 +197,7 @@ export function Demo1Dashboard() {
                       <div class="left-info">
                         <span class="text-muted">Order</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">22314</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.orders}</span>
                         </div>
                       </div>
                       <div class="right-icon">
@@ -210,9 +210,9 @@ export function Demo1Dashboard() {
                   <div class="card">
                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
                       <div class="left-info">
-                        <span class="text-muted">Avg Sale</span>
+                        <span class="text-muted">Cancel Oredrs</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">$21770</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.cancelledOrders}</span>
                         </div>
                       </div>
                       <div class="right-icon">
@@ -225,9 +225,9 @@ export function Demo1Dashboard() {
                   <div class="card">
                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
                       <div class="left-info">
-                        <span class="text-muted">Avg Item Sale</span>
+                        <span class="text-muted">Processing Order</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">2185</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.processingOrdersOverall}</span>
                         </div>
                       </div>
                       <div class="right-icon">
@@ -242,7 +242,7 @@ export function Demo1Dashboard() {
                       <div class="left-info">
                         <span class="text-muted">Total Sale</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">$235000</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.totalSaleOverAll}</span>
                         </div>
                       </div>
                       <div class="right-icon">
@@ -257,7 +257,7 @@ export function Demo1Dashboard() {
                       <div class="left-info">
                         <span class="text-muted">Total Medicine</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">211452</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.totalMedicine}</span>
                         </div>
                       </div>
                       <div class="right-icon">

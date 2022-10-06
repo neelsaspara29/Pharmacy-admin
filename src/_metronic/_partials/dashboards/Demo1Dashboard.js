@@ -18,9 +18,11 @@ import {BsGraphUp} from 'react-icons/bs'
 import {GoGraph} from 'react-icons/go'
 import { ApiPost } from "../../../helpers/API/ApiData";
 import { ErrorToast } from "../../../helpers/Toast";
+import { useHistory } from "react-router-dom";
 export function Demo1Dashboard() {
     const [Data, setData] = useState()
     const [time, setTime] = useState(0)
+    const history = useHistory();
     const fetchData = async () => {
         // console.log("body out");
         let body = {
@@ -179,7 +181,7 @@ export function Demo1Dashboard() {
                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
                   <div class="card">
                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
-                      <div class="left-info">
+                      <div class="left-info pointer" onClick={()=> {history.push('/retailers')}} >
                         <span class="text-muted">Active Retailer</span>
                         <div>
                           <span class="fs-6 fw-bold me-2">{Data?.activeRetailers}</span>
@@ -194,7 +196,7 @@ export function Demo1Dashboard() {
                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
                   <div class="card">
                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
-                      <div class="left-info">
+                      <div class="left-info pointer" onClick={() => {history.push('/orders')}}>
                         <span class="text-muted">Order</span>
                         <div>
                           <span class="fs-6 fw-bold me-2">{Data?.orders}</span>
@@ -254,7 +256,7 @@ export function Demo1Dashboard() {
                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
                   <div class="card">
                     <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
-                      <div class="left-info">
+                      <div class="left-info pointer" onClick={() => {history.push('/users')}}>
                         <span class="text-muted">Total Medicine</span>
                         <div>
                           <span class="fs-6 fw-bold me-2">{Data?.totalMedicine}</span>

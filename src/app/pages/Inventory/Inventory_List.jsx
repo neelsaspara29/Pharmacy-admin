@@ -102,7 +102,7 @@ export default function Inventory_List() {
           >
             
             <div>
-              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" onClick={() => click(row)}>
+              <a className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg" >
                 {row?.name}
               </a>
             </div>

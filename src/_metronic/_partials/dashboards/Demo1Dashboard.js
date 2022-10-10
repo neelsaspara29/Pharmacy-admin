@@ -110,7 +110,7 @@ export function Demo1Dashboard() {
           {/* main dashboard */}
           <div class="row g-3 mt-3 mb-3 row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-4">
             <div class="col">
-              <div class="alert-success alert mb-0">
+              <div class="alert-success alert mb-0 pointer" onClick={() => {history.push('/orders')}}>
                 <div class="d-flex align-items-center">
                   <div class="avatar rounded no-thumbnail bg-success text-light">
                     <GoGraph fontSize = {"35px"} />
@@ -123,7 +123,7 @@ export function Demo1Dashboard() {
               </div>
             </div>
             <div class="col">
-              <div class="alert-danger alert mb-0">
+              <div class="alert-danger alert mb-0 pointer" onClick={() => {history.push('/orders')}}>
                 <div class="d-flex align-items-center">
                   <div class="avatar rounded no-thumbnail bg-danger text-light">
                     <FaShippingFast fontSize={"35px"} />
@@ -136,7 +136,7 @@ export function Demo1Dashboard() {
               </div>
             </div>            
             <div class="col">
-              <div class="alert-warning alert mb-0">
+              <div class="alert-warning alert mb-0 pointer" onClick={() => {history.push('/orders')}}>
                 <div class="d-flex align-items-center">
                   <div class="avatar rounded no-thumbnail bg-warning text-light">
                     <BsGraphUp fontSize={"35px"} />
@@ -149,7 +149,7 @@ export function Demo1Dashboard() {
               </div>
             </div>
             <div class="col">
-              <div class="alert-info alert mb-0">
+              <div class="alert-info alert mb-0 pointer" onClick={() => {history.push('/orders')}}>
                 <div class="d-flex align-items-center">
                   <div class="avatar rounded no-thumbnail bg-info text-light">
                     <MdOutlinePendingActions fontSize={"35px"} />

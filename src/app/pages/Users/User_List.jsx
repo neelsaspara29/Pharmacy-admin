@@ -141,7 +141,7 @@ export default function User_List() {
       sort: true,
       formatter: (cell,row,index) => {
         console.log(cell,row,index);
-        return <span className="text-danger">#{index+1}</span>;
+        return <span className="text-danger">#{row?.batchNo}</span>;
       },
     },
     {
@@ -155,7 +155,7 @@ export default function User_List() {
             <div className="symbol symbol-50 symbol-light mr-4">
               <img
                 src={
-                  row.mainImagee
+                  row.mainImage
                     ? row.mainImage
                     : "https://img.icons8.com/clouds/100/000000/user.png"
                   }
@@ -292,6 +292,10 @@ export default function User_List() {
       return { ...data, [name]: value };
     });
   };
+
+  const handlePageChange = (e, i) => {
+    fetchData(i, pagesize, searching);
+  }
   
 
 
@@ -585,7 +589,7 @@ export default function User_List() {
                   <Pagination
                     count={totalpage}
                     page={currentpage}
-                    onChange={handleChange}
+                    onChange={handlePageChange}
                     variant="outlined"
                     shape="rounded"
                     className="pagination_"

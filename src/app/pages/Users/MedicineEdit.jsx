@@ -363,7 +363,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                     </div>
                     <div class="col-3">
                       <Form.Group>
-                        <Form.Label>Marginal Discount</Form.Label>
+                        <Form.Label>Other Discount</Form.Label>
                         <div className="d-flex">
                           <div
                             className="d-flex justify-content-center align-items-center position-relative  "

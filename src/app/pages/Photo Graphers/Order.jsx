@@ -124,7 +124,7 @@ function Order() {
       status: 1,
     }).then((data) => SuccessToast("Order Status Changed"));
 
-    fetchData(_id);
+    fetchData(user_id);
   };
   const cancleOrdert = async () => {
     let _id = queryString.parse(window.location.search).id;
@@ -138,7 +138,7 @@ function Order() {
   const fetchData = async (_id) => {
     await ApiPost("/order/get", { orderId: _id }).then((res) => {
       console.log("res-", res);
-      setProducts(res?.data?.data?.orderDetails.prods);
+      setProducts(res?.data?.data?.orderDetails?.prods);
       setData(res?.data?.data?.orderDetails);
       setNote(res?.data?.data?.orderDetails?.note);
       setReceivedAmount(res?.data?.data?.orderDetails?.recievedAmount);
@@ -231,15 +231,19 @@ function Order() {
                           <span>Sub Total:</span>
                           <span>
                             &#8377;
-                            {products.reduce((total, data) => {
-                              return total + data.prodId.mrp * data.qty;
-                            }, 0)}
+                            {data?.orderTotal}
                           </span>
                         </div>
                         <div>
                           <span>Discount::</span>
                           <span className="text-green-500">
                             {data?.discount ? "-" + data.discount : 0}
+                          </span>
+                        </div>
+                        <div>
+                          <span>Gst::</span>
+                          <span className="text-green-500">
+                            {data?.gst}
                           </span>
                         </div>
                         {/* <div>

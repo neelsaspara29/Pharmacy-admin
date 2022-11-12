@@ -702,28 +702,7 @@ export default function User_List() {
                     </div>
                   </label>
                 </div>
-                <div className="col-lg-12 mt-10">
-                  <div className="fs-7">Add Product Gallary Images</div>
-                  <label
-                    htmlFor="multyFile"
-                    className=" h-150px  w-100 d-flex justify-content-center align-items-center  border-dashed border-light "
-                    role="button"
-                  >
-                    <div
-                      id="gallaryimage"
-                      className=" d-flex justify-content-center align-items-center"
-                      style={{ fontSize: "6px !importanat" }}
-                    >
-                      {isPrev
-                        ? gimages.length != 0
-                          ? gimages.map((src) => (
-                              <img src={src} width={160} height={140} />
-                            ))
-                          : "Click To Add Image"
-                        : " Click To Add Image"}
-                    </div>
-                  </label>
-                </div>
+              
 
                 <input
                   type="file"
@@ -886,7 +865,7 @@ export default function User_List() {
                     </div>
                     <div class="col-3">
                       <Form.Group>
-                        <Form.Label>Marginal Discount</Form.Label>
+                        <Form.Label>Other Discount</Form.Label>
                         <div className="d-flex">
                           <div
                             className="d-flex justify-content-center align-items-center position-relative  "

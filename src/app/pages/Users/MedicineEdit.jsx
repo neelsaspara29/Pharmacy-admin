@@ -10,53 +10,61 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
   console.log(data, hide, state,category);
   const [editData, setEditData] = useState([]);
   const [modalState, setModalState] = useState(1);
-  const [catArr, setCatArr] = useState([]);
-  const [tagArr, setTagArr] = useState([]);
-  const [mnameSuggestion, setMnameSuggestion] = useState([])
-
+  const [catField, setCatField] = useState("");
+  const [mnameSuggestion, setMnameSuggestion] = useState([]);
 
   const getSuggestion = (v) => {
-    if(v) {
-
-      const result = mname.filter(item => item.toLowerCase().includes(v) )
-      console.log(result)
-      setMnameSuggestion(result)
-    }else {
-      setMnameSuggestion([])
+    if (v) {
+      const result = mname.filter((item) => item.toLowerCase().includes(v));
+      console.log(result);
+      setMnameSuggestion(result);
+    } else {
+      setMnameSuggestion([]);
     }
-  }
+  };
 
   const onMnameSuggestionClick = (v) => {
     setEditData((data) => {
       return { ...data, ["manufacturerName"]: v };
     });
-    setMnameSuggestion([])
-  }
+    setMnameSuggestion([]);
+  };
   const handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
-    if(name == "manufacturerName") {
-      getSuggestion(value)
-    }else {
-      setMnameSuggestion([])
+    if (name == "manufacturerName") {
+      getSuggestion(value);
+    } else {
+      setMnameSuggestion([]);
     }
-    console.log()
     setEditData((data) => {
       return { ...data, [name]: value };
     });
   };
   const handleCatchange = (e) => {
-    const category_show = document.getElementById("category_show");
-    if (e.target.value != "Select Category")
-      category_show.innerHTML += `<span class='p-2 bg-light m-2'>${e.target.value}</span>`;
-    setCatArr([...catArr, ...editData.category, e.target.options[e.target.selectedIndex].dataset.id]);
+    let name = e.target.name;
+    if (e.target.value != "Select Category") {
+      let cat_temp = editData.category;
+      cat_temp.push(e.target.options[e.target.selectedIndex].dataset.id);
+      console.log(cat_temp);
+      setEditData((data) => {
+        return { ...data, [name]: cat_temp };
+      });
+    }
   };
   const handleTagShow = (e) => {
-    const tags_show = document.getElementById("tags_show");
+    let name = e.target.name;
+    let value = e.target.value;
     if (e.key == "Enter") {
-      tags_show.innerHTML += `<span class='p-1  bg-success m-2'># ${e.target.value}</span>`;
-      setTagArr([...tagArr, e.target.value]);
-      setEditData({ ...editData, tags: "" });
+      let tag_temp = editData.tags;
+      tag_temp.push(value);
+      setEditData((data) => {
+        return {
+          ...data,
+          [name]: tag_temp,
+        };
+      });
+      setCatField("");
     }
   };
   const imageMainhandle = async (e) => {
@@ -123,23 +131,20 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
     temp_1 = editData.images.concat(temp_1);
     setEditData({ ...editData, [name]: temp_1 });
   };
-  const handleMedicineUpdate = async ()=> {
+  const handleMedicineUpdate = async () => {
     let body = editData;
-    body.category = catArr
     body.medicineId = data._id;
-    body.tags = data.tags.concat(tagArr);
-    body.category = data.category.concat(catArr);
-    console.log(body)
-    await ApiPost('/medicine/update', body).then((res) => {
+    console.log(body);
+    await ApiPost("/medicine/update", body).then((res) => {
       if (res.status == 200) {
         hide();
-        SuccessToast("Medicine Updated Successfully") 
+        SuccessToast("Medicine Updated Successfully");
         fetchData(currentpage, pagesize, searching);
       }
-    })
-  }
+    });
+  };
   useEffect(() => {
-    setEditData({...data,tags:""});
+    setEditData({ ...data });
   }, [data]);
   return (
     <>
@@ -228,7 +233,6 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                     </div>
                   </label>
                 </div>
-              
 
                 <input
                   type="file"
@@ -238,7 +242,6 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                   accept="image/*"
                   onChange={imageMainhandle}
                 />
-                
               </div>
             )}
             {modalState == 3 && (
@@ -258,15 +261,35 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                           onChange={handleChange}
                           value={editData.manufacturerName}
                         />
-                        <div style={{position: "absolute", top: "68px", background:"lightGray", width: "352px", zIndex: "10", borderRadius: "3px"}}>
-                        {mnameSuggestion.map((item) => {
-                          return (
-                            <>
-                              <div style={{padding: "10px", borderBottom: "1px solid gray", cursor: "pointer"}} onClick={() => {onMnameSuggestionClick(item)}}>{item}</div>
-                            </>
-                          )
-                        } )}
-                      </div>
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: "68px",
+                            background: "lightGray",
+                            width: "352px",
+                            zIndex: "10",
+                            borderRadius: "3px",
+                          }}
+                        >
+                          {mnameSuggestion.map((item) => {
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    padding: "10px",
+                                    borderBottom: "1px solid gray",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    onMnameSuggestionClick(item);
+                                  }}
+                                >
+                                  {item}
+                                </div>
+                              </>
+                            );
+                          })}
+                        </div>
 
                         <span className="errorInput">
                           {/* {data.name?.length > 0 ? "" : errors["name"]} */}
@@ -464,6 +487,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                         <Form.Control
                           as="select"
                           placeholder="select category"
+                          name="category"
                           onChange={handleCatchange}
                         >
                           <option>Select Category</option>
@@ -476,14 +500,20 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                     <div className="col-6">
                       <Form.Group>
                         <Form.Label>&nbsp;</Form.Label>
-                        <Form.Control as="text" id="category_show" readOnly className="overflow-scroll">
-                          {data.category.map((cat) => (
-                            <span className="p-2 bg-light m-2">{
-                              
-                            category.filter((data)=>data._id==cat)[0]?.name
-                            }</span>
+                        <Form.Control
+                          as="text"
+                          id="category_show"
+                          readOnly
+                          className="overflow-scroll"
+                        >
+                          {editData.category.map((cat) => (
+                            <span className="p-2 bg-light m-2">
+                              {
+                                category.filter((data) => data._id == cat)[0]
+                                  ?.name
+                              }
+                            </span>
                           ))}
-                          
                         </Form.Control>
                       </Form.Group>
                     </div>
@@ -500,21 +530,24 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                           required
                           name="tags"
                           placeholder="Select Product Tag"
-                          onChange={handleChange}
-                          value={editData.tags}
+                          onChange={(e) => setCatField(e.target.value)}
+                          value={catField}
                           onKeyDown={handleTagShow}
                         />
-
                       </Form.Group>
                     </div>
                     <div className="col-6">
                       <Form.Group>
                         <Form.Label>&nbsp;</Form.Label>
-                        <Form.Control as="text" id="tags_show" readOnly className="overflow-scroll">
-                          {data.tags.map((tag) => (
+                        <Form.Control
+                          as="text"
+                          id="tags_show"
+                          readOnly
+                          className="overflow-scroll"
+                        >
+                          {editData.tags.map((tag) => (
                             <span className="p-1 bg-success m-2"># {tag}</span>
                           ))}
-                          
                         </Form.Control>
                       </Form.Group>
                     </div>
@@ -538,35 +571,46 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                       </Form.Group>
                     </div>
                     <div className="col-4">
-                    <Form.Group md="6">
-                      <Form.Label>Gst</Form.Label>
-                      <Form.Control
-                        type="text"
-                        id="gst"
-                        // className={errors["name"] && "chipInputRed"}
-                        label="tags"
-                        required
-                        name="gst"
-                        placeholder="Gst Detail"
-                        onChange={handleChange}
-                        value={editData.gst}
-                      />
-                    </Form.Group>
+                      <Form.Group md="6">
+                        <Form.Label>Gst</Form.Label>
+                        <Form.Control
+                          type="text"
+                          id="gst"
+                          // className={errors["name"] && "chipInputRed"}
+                          label="tags"
+                          required
+                          name="gst"
+                          placeholder="Gst Detail"
+                          onChange={handleChange}
+                          value={editData.gst}
+                        />
+                      </Form.Group>
                       <Form.Group md="6">
                         <Form.Label>Status</Form.Label>
                         <Form.Group md="6">
-                      
-                      <Form.Control
-                        as="select"
-                        placeholder="select category"
+                          <Form.Control
+                            as="select"
+                            placeholder="select category"
                             onChange={handleChange}
                             name="status"
-                      >
-                        <option>Select Status</option>
-                         { editData.status==true?<option value="true" selected>Public</option>:<option value="true"  >Public</option>}
-                         { editData.status==false?<option value="false" selected>Draft</option>:<option value="false"  >Draft</option>}
-                      </Form.Control>
-                    </Form.Group>
+                          >
+                            <option>Select Status</option>
+                            {editData.status == true ? (
+                              <option value="true" selected>
+                                Public
+                              </option>
+                            ) : (
+                              <option value="true">Public</option>
+                            )}
+                            {editData.status == false ? (
+                              <option value="false" selected>
+                                Draft
+                              </option>
+                            ) : (
+                              <option value="false">Draft</option>
+                            )}
+                          </Form.Control>
+                        </Form.Group>
                       </Form.Group>
                     </div>
                   </div>
@@ -612,7 +656,7 @@ function MedicineEdit({ data, hide, state, category,fetchData, currentpage, page
                 ) : (
                   <button
                     type="submit"
-                      onClick={handleMedicineUpdate}
+                    onClick={handleMedicineUpdate}
                     // disabled={button}
                     className="btn btn-primary btn-elevate"
                   >

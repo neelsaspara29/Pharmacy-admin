@@ -41,6 +41,8 @@ export default function BasePage() {
         <ContentRoute path="/orders" component={Orders} />
         <ContentRoute
           path="/order"
+
+
           component={Order}
         />  
 
@@ -60,7 +62,7 @@ export default function BasePage() {
         <ContentRoute path="/events" component={Event} />
         <ContentRoute path="/q&a" component={QandA} />
 
-        <Redirect to="error/error-v1" />   
+        <Redirect to="/" />   
       </Switch>
     </Suspense>
   );

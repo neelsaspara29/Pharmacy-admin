@@ -52,25 +52,13 @@ export function AuthPage() {
                 <div className="opacity-70 font-weight-bold	text-white">
                   &copy; 2022 HealthSarv
                 </div>
-                {/* <div className="d-flex">
-                  <Link to="/terms" className="text-white">
-                    Privacy
-                  </Link>
-                  <Link to="/terms" className="text-white ml-10">
-                    Legal
-                  </Link>
-                  <Link to="/terms" className="text-white ml-10">
-                    Contact
-                  </Link>
-                </div> */}
+               
               </div>
               {/* end:: Aside footer for desktop */}
             </div>
             {/*end: Aside Container*/}
           </div>
-          {/*begin::Aside*/}
-
-          {/*begin::Content*/}
+          
           <div className="flex-row-fluid d-flex flex-column position-relative p-7 overflow-hidden">
             {/*begin::Content header*/}
 
@@ -92,7 +80,7 @@ export function AuthPage() {
               <div className="text-dark-50 font-weight-bold order-2 order-sm-1 my-2">
                 &copy; 2020 HealthSarv
               </div>
-              <div className="d-flex order-1 order-sm-2 my-2">
+              <div className="d-flex order-1  order-sm-2 my-2">
                 <Link to="/terms" className="text-dark-75 text-hover-primary">
                   Privacy
                 </Link>

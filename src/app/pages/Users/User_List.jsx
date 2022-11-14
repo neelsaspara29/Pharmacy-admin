@@ -9,7 +9,6 @@ import { validationMedicineData } from "../../../_metronic/_helpers/validationHe
 import DropdownButton from "react-bootstrap/DropdownButton";
 // const data2 = ["sassasassas","aaaassfsfsf", "dsdsdsdsdsd","cdcdcddccd"];
 
-
 import {
   ApiDelete,
   ApiGet,
@@ -64,11 +63,40 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "10px",
   },
 }));
+const medicineObj = {
+  name: "",
+  description: "",
+  mainImage: "",
+  images: [],
+  manufacturerName: "",
+  pack: "",
+  ptr: "",
+  stocks: "",
+  mrp: "",
+  marginalDiscount: "",
+  Scheme: "",
+  chemicalComposition: "",
+  hsnCode: "",
+  category: "",
+  tags: "",
+  ShortDesc: "",
+  status: "",
+};
 
-const mname = ["Premium Medicare","Pharma Art", "Optimum Healthcare", "Quick Health Remedies", "Diligent Health Solutions", "Noble Pharmaceuticals", "Healthy Life Medicare", "Perfect Pharma Solutions", "Wellness Pharma", "Good Health Pharmaceuticals"]
+const mname = [
+  "Premium Medicare",
+  "Pharma Art",
+  "Optimum Healthcare",
+  "Quick Health Remedies",
+  "Diligent Health Solutions",
+  "Noble Pharmaceuticals",
+  "Healthy Life Medicare",
+  "Perfect Pharma Solutions",
+  "Wellness Pharma",
+  "Good Health Pharmaceuticals",
+];
 
 let firstSearch = true;
-
 
 export default function User_List() {
   const classes = useStyles();
@@ -86,25 +114,7 @@ export default function User_List() {
   const [rowID, setRowID] = React.useState();
   const [modalState, setModalState] = useState(1);
   const [category, setCategory] = useState([]);
-  const [addData, setAddData] = useState({
-    name: "",
-    description: "",
-    mainImage: "",
-    images: [],
-    manufacturerName: "",
-    pack: "",
-    ptr: "",
-    stocks: "",
-    mrp: "",
-    marginalDiscount: "",
-    Scheme: "",
-    chemicalComposition: "",
-    hsnCode: "",
-    category: "",
-    tags: "",
-    ShortDesc: "",
-    status:""
-  });
+  const [addData, setAddData] = useState(medicineObj);
   const [catArr, setCatArr] = useState([]);
   const [tagArr, setTagArr] = useState([]);
   const [mainImg, setMainImg] = useState();
@@ -116,8 +126,8 @@ export default function User_List() {
   const [delet, setDelet] = useState(false);
   const [deletId, setDeletId] = useState("");
   const [isPrev, setIsPrev] = useState(false);
-  const [mnameSuggestion, setMnameSuggestion] = useState([])
-  
+  const [mnameSuggestion, setMnameSuggestion] = useState([]);
+
   const deletMedicine = async () => {
     await ApiDelete(`/medicine/${deletId}`)
       .then((res) => {
@@ -139,8 +149,8 @@ export default function User_List() {
       dataField: "_id",
       text: "ID",
       sort: true,
-      formatter: (cell,row,index) => {
-        console.log(cell,row,index);
+      formatter: (cell, row, index) => {
+        console.log(cell, row, index);
         return <span className="text-danger">#{row?.batchNo}</span>;
       },
     },
@@ -158,11 +168,11 @@ export default function User_List() {
                   row.mainImage
                     ? row.mainImage
                     : "https://img.icons8.com/clouds/100/000000/user.png"
-                  }
-                  width={30}
-                  height={30}
+                }
+                width={30}
+                height={30}
                 className="img-fluid"
-                style={{ objectFit: "cover",width:'30px',height:'30px' }}
+                style={{ objectFit: "cover", width: "30px", height: "30px" }}
               />
             </div>
             <div>
@@ -202,8 +212,7 @@ export default function User_List() {
       text: "CREATED AT",
       sort: true,
       formatter: (cell, row) => {
-        
-        return <div>{moment(row.createdAt).format("DD/MM/YYYY")}</div>
+        return <div>{moment(row.createdAt).format("DD/MM/YYYY")}</div>;
       },
     },
     {
@@ -219,7 +228,7 @@ export default function User_List() {
                 className="btn btn-icon btn-light btn-hover-primary btn-sm me-3"
                 onClick={() => {
                   setEditModal(!editModal);
-                  setEditData(row)
+                  setEditData(row);
                 }}
               >
                 <span className="svg-icon svg-icon-md svg-icon-primary">
@@ -261,32 +270,30 @@ export default function User_List() {
     fetchData(1, parseInt(e.target.value), searching);
   };
 
-
   const getSuggestion = (v) => {
-    if(v) {
-
-      const result = mname.filter(item => item.toLowerCase().includes(v) )
-      console.log(result)
-      setMnameSuggestion(result)
-    }else {
-      setMnameSuggestion([])
+    if (v) {
+      const result = mname.filter((item) => item.toLowerCase().includes(v));
+      console.log(result);
+      setMnameSuggestion(result);
+    } else {
+      setMnameSuggestion([]);
     }
-  }
+  };
 
   const onMnameSuggestionClick = (v) => {
     setAddData((data) => {
       return { ...data, ["manufacturerName"]: v };
     });
-    setMnameSuggestion([])
-  }
+    setMnameSuggestion([]);
+  };
 
   const handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
-    if(name == "manufacturerName") {
-      getSuggestion(value)
-    }else {
-      setMnameSuggestion([])
+    if (name == "manufacturerName") {
+      getSuggestion(value);
+    } else {
+      setMnameSuggestion([]);
     }
     setAddData((data) => {
       return { ...data, [name]: value };
@@ -295,9 +302,7 @@ export default function User_List() {
 
   const handlePageChange = (e, i) => {
     fetchData(i, pagesize, searching);
-  }
-  
-
+  };
 
   const handleAddMedicineSubmit = async () => {
     let body = addData;
@@ -309,11 +314,14 @@ export default function User_List() {
     let res = validationMedicineData(body);
 
     if (res == true) {
-    
       console.log(body);
       await ApiPost("/medicine/add", body).then((res) => {
         console.log(res);
-        
+        setAddData(medicineObj);
+        setMainImg("");
+        setCatArr([]);
+        setTagArr([]);
+        setModalState(1);
         setModal(!modal);
         fetchData(1, 10);
       });
@@ -323,16 +331,16 @@ export default function User_List() {
     }
   };
   const handleCatchange = (e) => {
-   
     const category_show = document.getElementById("category_show");
     if (e.target.value != "Select Category")
-      category_show.innerHTML += `<span class='p-2 bg-light m-2'>${e.target.value}</span>`;
-    setCatArr([...catArr,e.target.options[e.target.selectedIndex].dataset.id]);
+      setCatArr([
+        ...catArr,
+        e.target.options[e.target.selectedIndex].dataset.id,
+      ]);
   };
   const handleTagShow = (e) => {
     const tags_show = document.getElementById("tags_show");
     if (e.key == "Enter") {
-      tags_show.innerHTML += `<span class='p-2  bg-success m-2'># ${e.target.value}</span>`;
       setTagArr([...tagArr, e.target.value]);
       setAddData({ ...addData, tags: "" });
     }
@@ -465,6 +473,7 @@ export default function User_List() {
   const fetchCategory = async () => {
     await ApiPost("/category/get").then((res) => {
       setCategory(res.data.data);
+      console.log("catData", res.data.data);
     });
   };
 
@@ -620,7 +629,9 @@ export default function User_List() {
           show={modal}
           centered
           size="lg"
-          onHide={() => setModal(!modal)}
+          onHide={() => {
+           setModal(!modal);
+          }}
           aria-labelledby="example-modal-sizes-title-lg"
           contentClassName="modaldailog"
         >
@@ -702,7 +713,6 @@ export default function User_List() {
                     </div>
                   </label>
                 </div>
-              
 
                 <input
                   type="file"
@@ -978,11 +988,19 @@ export default function User_List() {
                     <div className="col-6">
                       <Form.Group>
                         <Form.Label>&nbsp;</Form.Label>
-                        <Form.Control
-                          as="text"
-                          id="category_show"
-                          readOnly
-                        ></Form.Control>
+                        <Form.Control as="text" id="category_show" readOnly>
+                          {catArr.length != 0 &&
+                            catArr.map((data) => {
+                              for (let i = 0; i < category.length; i++) {
+                                if (category[i]._id == data)
+                                  return (
+                                    <span class="p-2 bg-light m-2">
+                                      {category[i].name}
+                                    </span>
+                                  );
+                              }
+                            })}
+                        </Form.Control>
                       </Form.Group>
                     </div>
                   </div>
@@ -991,10 +1009,10 @@ export default function User_List() {
                       <Form.Group>
                         <Form.Label>Product tags</Form.Label>
                         <Form.Control
-                          as="text"
+                          type="text"
                           id="tagsID"
                           // className={errors["name"] && "chipInputRed"}
-                          label="tags"
+                          // label="tags"
                           required
                           name="tags"
                           placeholder="Select Product Tag"
@@ -1011,11 +1029,14 @@ export default function User_List() {
                     <div className="col-6">
                       <Form.Group>
                         <Form.Label>&nbsp;</Form.Label>
-                        <Form.Control
-                          as="text"
-                          id="tags_show"
-                          readOnly
-                        ></Form.Control>
+                        <Form.Control as="text" id="tags_show" readOnly>
+                          {tagArr.length != 0 &&
+                            tagArr.map((data) => {
+                              return (
+                                <span class="p-2  bg-success m-2">{data}</span>
+                              );
+                            })}
+                        </Form.Control>
                       </Form.Group>
                     </div>
                   </div>
@@ -1091,7 +1112,14 @@ export default function User_List() {
               <div>
                 <button
                   type="button"
-                  onClick={() => setModal(!modal)}
+                  onClick={() => {
+                    setAddData(medicineObj);
+                    setMainImg("");
+                    setCatArr([]);
+                    setTagArr([]);
+                    setModalState(1);
+                    setModal(!modal);
+                  }}
                   className="btn btn-light btn-elevate mr-2"
                 >
                   CANCEL

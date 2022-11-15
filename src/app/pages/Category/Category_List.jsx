@@ -112,7 +112,7 @@ export default function Category_List() {
           //   );
           //   ErrorToast(err.message);
         } else {
-          ErrorToast(err.message);
+           ErrorToast(err.message);
         }
       });
     setModal(!modal);

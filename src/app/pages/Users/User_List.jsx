@@ -80,7 +80,7 @@ const medicineObj = {
   category: "",
   tags: "",
   ShortDesc: "",
-  status: "",
+  status: true,
 };
 
 const mname = [
@@ -1084,8 +1084,20 @@ export default function User_List() {
                           name="status"
                         >
                           <option>Select Status</option>
-                          <option value="true">Public</option>
-                          <option value="false">Draft</option>
+                            {addData.status == true ? (
+                              <option value="true" selected>
+                                Public
+                              </option>
+                            ) : (
+                              <option value="true">Public</option>
+                            )}
+                            {addData.status == false ? (
+                              <option value="false" selected>
+                                Draft
+                              </option>
+                            ) : (
+                              <option value="false">Draft</option>
+                            )}
                         </Form.Control>
                       </Form.Group>
                     </div>

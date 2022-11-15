@@ -311,7 +311,10 @@ export default function User_List() {
     body.mainImage = mainImg;
     body.images = gimages;
     console.log(body);
-    // let res = validationMedicineData(body);
+    let res = validationMedicineData(body);
+
+    if(res == true) {
+
 
    
       console.log(body);
@@ -325,9 +328,14 @@ export default function User_List() {
         setModal(!modal);
         fetchData(1, 10);
       }).catch((err) => {
-        // ErrorToast(err.message);
+        ErrorToast(err.message);
 
       });
+    }else  {
+      ErrorToast(res.res)
+      setModalState(res.state)
+    }
+
     
   };
   const handleCatchange = (e) => {

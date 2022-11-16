@@ -29,8 +29,8 @@ export function HeaderMobile() {
       >
         {/*begin::Logo*/}
         <Link to="/">
-          <h4 style={{ color: 'white' }}>Unicorn UI</h4>
-          {/* <img alt="logo" src={layoutProps.headerLogo}/> */}
+                 {/* <h4 style={{ color: 'white' }}>Unicorn UI</h4> */}
+                 <img alt="logo" style={{height: "34px"}} src={'./media/logos/health.png'}/>
         </Link>
         {/*end::Logo*/}
 

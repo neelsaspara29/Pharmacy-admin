@@ -9,7 +9,7 @@ export const menu = [
   },
   {
     title: "Medicine",
-    pathname: "users",
+    pathname: "medicine",
     img: `/media/svg/icons/HealthSarvAside/medic.svg`,
     flag: true,
   },

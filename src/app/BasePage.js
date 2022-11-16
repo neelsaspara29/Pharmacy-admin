@@ -25,7 +25,7 @@ export default function BasePage() {
           <Redirect exact from="/" to="/dashboard" />
         }
         <ContentRoute path="/dashboard" component={DashboardPage} />
-        <ContentRoute path="/users" component={Medicine_List} />
+        <ContentRoute path="/medicine" component={Medicine_List} />
 
 
         <ContentRoute path="/orders" component={Orders} />

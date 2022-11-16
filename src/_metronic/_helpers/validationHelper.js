@@ -22,6 +22,10 @@ const validationMedicineData = (obj) => {
     let marginalDiscount = obj.marginalDiscount;
     if (isNaN(marginalDiscount))
         return {res:"Discount Value Must Be Number",state:3};
+    let hsnCode = obj.hsnCode;
+    if (isNaN(hsnCode))
+        return {res:"Hsn Value Must Be Number",state:4};
+    
 
     
 

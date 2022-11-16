@@ -98,7 +98,7 @@ const mname = [
 
 let firstSearch = true;
 
-export default function User_List() {
+export default function Medicine_List() {
   const classes = useStyles();
   const history = useHistory();
   const [state, setState] = React.useState(true);

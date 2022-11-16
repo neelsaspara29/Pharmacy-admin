@@ -261,7 +261,7 @@ export default function Inventory_List() {
 
   // console.log("block", block);
 
-  const readExcel = (file) => {
+  const readExcelForUpdate = (file) => {
     const promise = new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.readAsArrayBuffer(file);
@@ -295,6 +295,58 @@ export default function Inventory_List() {
       // setItems(d);
       console.log("data", d)
       await ApiPost("/inventory/update", body)
+      .then((res) => {
+        console.log(res)
+    fetchData(currentpage, pagesize, searching);
+
+        SuccessToast(res.data.message)
+        // setData(res?.data?.data?.medicinesData);
+        // console.log(res.data.data.retailersData[0].createdAt)
+        // console.log(moment(res.data.data.retailersData[0].createdAt).format('L'))
+        // settotalpage(res?.data?.data?.state?.page_limit);
+        // setcurrentpage(res?.data?.data?.state?.page);
+        // setpagesize(res?.data?.data?.state?.limit);
+      })
+      .catch(async (err) => {
+        ErrorToast(err?.message);
+      });
+
+    });
+  };
+  const readExcelForCreate = (file) => {
+    const promise = new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsArrayBuffer(file);
+
+      fileReader.onload = (e) => {
+        const bufferArray = e.target.result;
+
+        const wb = XLSX.read(bufferArray, { type: "buffer" });
+
+        
+        const wsname = wb.SheetNames[0];
+        
+        const ws = wb.Sheets[wsname];
+        
+        const data = XLSX.utils.sheet_to_json(ws);
+        
+        console.log("data neel", data)
+        resolve(data);
+
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+
+    promise.then(async (d) => {
+      let body = {
+        data: d
+      }
+      // setItems(d);
+      console.log("data", d)
+      await ApiPost("/medicine/add/bulk", body)
       .then((res) => {
         console.log(res)
     fetchData(currentpage, pagesize, searching);
@@ -430,7 +482,7 @@ export default function Inventory_List() {
         hidden
         onChange={(e) => {
           const file = e.target.files[0];
-          readExcel(file);
+          readExcelForUpdate(file);
         }}
       /> 
         <label htmlFor="csvFile" className="m-0">
@@ -439,7 +491,28 @@ export default function Inventory_List() {
                 class="btn btn-primary font-weight-bolder"
                 // onClick={() => setOpen(true)}
               >
-                Upload Inventory
+                Update Inventory
+              </a>
+        </label>
+            </div>
+            <div  class="card-toolbar ms-2">
+             <input
+        type="file"
+        id="csvFile2"
+        // style={{visibility: "hidden"}}
+        hidden
+        onChange={(e) => {
+          const file = e.target.files[0];
+          readExcelForCreate(file);
+        }}
+      /> 
+        <label htmlFor="csvFile2" className="m-0">
+
+              <a
+                class="btn btn-primary font-weight-bolder"
+                // onClick={() => setOpen(true)}
+              >
+                Create Inventory
               </a>
         </label>
             </div>

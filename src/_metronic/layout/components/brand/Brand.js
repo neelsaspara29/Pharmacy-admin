@@ -30,7 +30,7 @@ export function Brand() {
         {/* begin::Logo */}
         <Link to="" className="brand-logo">
           <img src="./media/logos/health.png" alt="logo" className="max-h-70px" />
-          <h2 style={{ color: 'white' }}>HealthSarv</h2>
+          {/* <h2 style={{ color: 'white' }}>HealthSarv</h2> */}
           {/* <img
             alt="logo"
             style={{  height: "30px" }}

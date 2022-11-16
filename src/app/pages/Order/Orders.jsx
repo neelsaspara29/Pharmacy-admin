@@ -45,13 +45,14 @@ export default function Orders() {
   const classes = useStyles();
   const history = useHistory();
 
-  const [state, setState] = React.useState("approve");
+  // const [state, setState] = React.useState("approve");
   const [data, setData] = React.useState([]);
   const [totalpage, settotalpage] = useState(0);
   const [currentpage, setcurrentpage] = useState(1);
   const [pagesize, setpagesize] = useState(10);
   const [searching, setsearching] = useState("");
   const [date, setDate] = useState();
+  const [status, setStatus] = useState()
 
   const columns = [
     {
@@ -185,13 +186,13 @@ export default function Orders() {
 
   const handlesearch = (e) => {
     setsearching(e.target.value);
-    fetchData(currentpage, pagesize, searching);
+    fetchData(currentpage, pagesize, searching, status, date);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), searching, state);
+    fetchData(1, parseInt(e.target.value), searching, status, date);
   };
   const handleChange = (e, i) => {
-    fetchData(i, pagesize, searching, state);
+    fetchData(i, pagesize, searching, status, date);
   };
 
   const fetchData = async (page, limit, search, status, date) => {
@@ -226,16 +227,17 @@ export default function Orders() {
   };
 
   const handleonchnagestatus = (e) => {
-    fetchData(currentpage, pagesize, searching, e.target.value);
+    setStatus(e.target.value)
+    fetchData(currentpage, pagesize, searching, e.target.value, date);
   };
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
-    fetchData(currentpage, pagesize, searching, "", e.target.value);
+    fetchData(currentpage, pagesize, searching, status, e.target.value);
   };
 
   useEffect(() => {
-    fetchData(currentpage, pagesize, searching);
+    fetchData(currentpage, pagesize, searching, status, date);
   }, []);
 
   return (
@@ -306,10 +308,10 @@ export default function Orders() {
                           onChange={handleonchnagestatus}
                         >
                           <option value="">Select Status</option>
-                          <option value="0">Processing</option>
-                          <option value="1">Packed</option>
+                          <option value="0">Placed</option>
+                          <option value="1">Processing</option>
                           <option value="2">Rejected</option>
-                          <option value="3">In Transit</option>
+                          <option value="3">Shipping</option>
                           <option value="4">Delivered</option>
                           <option value="5">Return</option>
                           <option value="6">Return Completed</option>

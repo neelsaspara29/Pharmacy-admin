@@ -142,6 +142,9 @@ export default function Orders() {
       dataField: "total",
       text: "TOTAL",
       sort: true,
+      formatter: (cell, row) => {
+        return <span>{row?.total?.toFixed(2)}</span>;
+      },
     },
     {
       dataField: "createdAt",

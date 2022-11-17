@@ -143,7 +143,7 @@ export function Demo1Dashboard() {
                   </div>
                   <div class="flex-fill ms-3 text-truncate">
                     <div class="h6 mb-0">Total Sales</div>
-                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales}</span>
+                    <span class="small" style={{fontSize: "20px"}}>{Data?.totalSales?.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export function Demo1Dashboard() {
                       <div class="left-info">
                         <span class="text-muted">Total Sale</span>
                         <div>
-                          <span class="fs-6 fw-bold me-2">{Data?.totalSaleOverAll}</span>
+                          <span class="fs-6 fw-bold me-2">{Data?.totalSaleOverAll?.toFixed(2)}</span>
                         </div>
                       </div>
                       <div class="right-icon">

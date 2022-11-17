@@ -281,8 +281,11 @@ export default function Retailer_List() {
       limit,
       page,
       search,
-      status: parseInt(status)
+     
     };
+    if(status != "3"){
+      body.status = parseInt(status)
+      }
 
     await ApiPost("/retailers/get", body)
       .then((res) => {
@@ -323,7 +326,7 @@ export default function Retailer_List() {
   }
 
   useEffect(() => {
-    fetchData(currentpage, pagesize, searching);
+    fetchData(currentpage, pagesize, searching, filterState);
   }, []);
   return (
     <>

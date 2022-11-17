@@ -127,13 +127,14 @@ export default function Medicine_List() {
   const [deletId, setDeletId] = useState("");
   const [isPrev, setIsPrev] = useState(false);
   const [mnameSuggestion, setMnameSuggestion] = useState([]);
+  const [cid, setCid] = useState("")
 
   const deletMedicine = async () => {
     await ApiDelete(`/medicine/${deletId}`)
       .then((res) => {
         console.log(res);
         SuccessToast("User has been Successfully Deleted !!!");
-        fetchData(1, 10, "");
+        fetchData(currentpage, pagesize, searching, cid);
         setDelet(!delet);
       })
       .catch((err) => {
@@ -264,10 +265,10 @@ export default function Medicine_List() {
 
   const handlesearch = (e) => {
     setsearching(e.target.value);
-    fetchData(currentpage, pagesize, e.target.value);
+    fetchData(currentpage, pagesize, e.target.value, cid);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), searching);
+    fetchData(1, parseInt(e.target.value), searching, cid);
   };
 
   const getSuggestion = (v) => {
@@ -301,7 +302,7 @@ export default function Medicine_List() {
   };
 
   const handlePageChange = (e, i) => {
-    fetchData(i, pagesize, searching);
+    fetchData(i, pagesize, searching, cid);
   };
 
   const handleAddMedicineSubmit = async () => {
@@ -380,65 +381,10 @@ export default function Medicine_List() {
       });
     }
   };
-  const imageGallaryhandle = async (e) => {
-    let img_array = e.target.files;
-    const gallaryimage = document.getElementById("gallaryimage");
-    gallaryimage.style.display = "block";
-    if (gallaryimage.innerHTML == "Click To Add Image")
-      gallaryimage.innerHTML = "";
-    let temp = [];
-    let array = [];
-    for (let i = 0; i < img_array.length; i++) {
-      gimages.push(e.target.files[i]);
-      if (img_array[i]) {
-        temp.push(e.target.files[i]);
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(img_array[i]);
-        fileReader.addEventListener("load", function() {
-          array.push(this.result);
-          gallaryimage.innerHTML +=
-            '<img className=mr-2 src="' +
-            this.result +
-            '" width=160px  height=140px />';
-        });
-      }
-    }
-    setAddData({ ...addData, [e.target.name]: array });
-
-    let temp_1 = [];
-    for (let i = 0; i < temp.length; i++) {
-      let file = temp[i];
-      let fileURL = URL.createObjectURL(file);
-      file.fileURL = fileURL;
-      let formData = new FormData();
-      formData.append("image", file);
-      await ApiUpload("upload/profile", formData)
-        .then((res) => {
-          temp_1.push(res.data.data.image);
-        })
-        .catch((err) => console.log("res_blob", err));
-    }
-    setGimages(temp_1);
-  };
-
-  const handleSelectOrder = (e) => {
-    let name = e.target.value;
-    if (sorted == 1 && name == "Decreasing") {
-      let temp = data;
-      temp.reverse();
-      setData([...temp]);
-      setSorted(2);
-    } else if (sorted == 2 && name == "Increasing") {
-      let temp = data;
-      temp.reverse();
-      setData([...temp]);
-      setSorted(1);
-    }
-  };
+ 
   const hide = () => {
     setEditModal(!editModal);
   };
-
   const fetchData = async (page, limit, search, cid) => {
     let body = {
       search,
@@ -476,6 +422,7 @@ export default function Medicine_List() {
 
   const handleSelectCategory = (e) => {
     console.log(e.target.value);
+    setCid(e.target.value)
     fetchData(currentpage, pagesize, searching, e.target.value);
   };
   const fetchCategory = async () => {
@@ -487,7 +434,7 @@ export default function Medicine_List() {
 
   // console.log("resresresresresresresresresresres", data);
   useEffect(() => {
-    fetchData(currentpage, pagesize, searching);
+    fetchData(currentpage, pagesize, searching, cid);
     fetchCategory();
   }, []);
   return (
@@ -730,15 +677,7 @@ export default function Medicine_List() {
                   accept="image/*"
                   onChange={imageMainhandle}
                 />
-                <input
-                  type="file"
-                  name="images"
-                  id="multyFile"
-                  hidden
-                  multiple="multiple"
-                  accept="image/*"
-                  onChange={imageGallaryhandle}
-                />
+                
               </div>
             )}
             {modalState == 3 && (

@@ -75,14 +75,11 @@ export default function Retailer_List() {
   const [open, setOpen] = React.useState(false);
   const [Id, setId] = React.useState();
   const [rowID, setRowID] = React.useState();
-  const [filterState, SetFilterState] = useState(3)
+  const [filterState, SetFilterState] = useState(3);
+  // const [status, setStatus] = useState(3)
 
   console.log("data", data);
-  const deleteUserBtn = async (id) => {
-    await ApiDelete(`/user/delete_user/${id}`)
-      .then(res => { SuccessToast("User has been Successfully Deleted !!!"); fetchData(1, 10, "") })
-      .catch(err => { console.log('err_deleteUser', err); ErrorToast("user Not Deleted") });
-  }
+  
   const click = (v) => {
     history.push(`/retailer_detail?id=${v._id}`);
   }
@@ -252,7 +249,7 @@ export default function Retailer_List() {
       await ApiPost("/retailers/bulk/add", body)
       .then((res) => {
         console.log(res)
-    fetchData(currentpage, pagesize, searching);
+    fetchData(currentpage, pagesize, searching, filterState);
 
         SuccessToast(res.data.message)
         // setData(res?.data?.data?.medicinesData);
@@ -270,13 +267,13 @@ export default function Retailer_List() {
 
   const handlesearch = (e) => {
     setsearching(e.target.value);
-    fetchData(currentpage, pagesize, e.target.value);
+    fetchData(currentpage, pagesize, e.target.value, filterState);
   };
   const handleonchnagespagination = (e) => {
-    fetchData(1, parseInt(e.target.value), searching);
+    fetchData(1, parseInt(e.target.value), searching, filterState);
   };
   const handleChange = (e, i) => {
-    fetchData(i, pagesize, searching);
+    fetchData(i, pagesize, searching, filterState);
   };
 
   const fetchData = async (page, limit, search, status) => {
@@ -309,6 +306,7 @@ export default function Retailer_List() {
   // console.log("resresresresresresresresresresres", data);
 
   const handleChangeStatus = (e) => {
+
 
     SetFilterState(e)
     if(e != "3"){

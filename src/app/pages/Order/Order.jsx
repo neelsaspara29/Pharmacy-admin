@@ -264,7 +264,7 @@ function Order() {
                       </div>
                     </div>
                   </div>
-                  {data?.orderStatus == 2 && (
+                  {(data?.orderStatus == 2 || data?.orderStatus == 7) && (
                     <>
                       <div className="approved_stat">
                         <div className="text-danger">
@@ -292,7 +292,7 @@ function Order() {
                       <div className="reject_btn btn btn-danger">Reject</div>
                     </div>
                   )}
-                  {data?.orderStatus != 2 && data?.orderStatus != 0 && (
+                  {(data?.orderStatus != 2 && data?.orderStatus != 7) && data?.orderStatus != 0 && (
                     <div className="order_status_main">
                       <div>
                         <div class="card-header flex-wrap order_status">

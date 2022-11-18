@@ -125,6 +125,8 @@ export default function Orders() {
           return <div className="text-success">Returning</div>;
         } else if (row.orderStatus == 6) {
           return <div className="text-success">Return</div>;
+        } else if (row.orderStatus == 7) {
+          return <div className="text-danger">Cancelled</div>;
         }
       },
     },
@@ -318,6 +320,7 @@ export default function Orders() {
                           <option value="4">Delivered</option>
                           <option value="5">Return</option>
                           <option value="6">Return Completed</option>
+                          <option value="7">Cancelled Orders</option>
 
                           {/* <option value="price">Price</option>
                             <option value="date">Date</option>

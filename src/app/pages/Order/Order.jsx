@@ -74,7 +74,7 @@ function Order() {
       sort: true,
       formatter: (cell, row) => {
         console.log("row", cell);
-        return <span>&#8377;{row.prodId.mrp}</span>;
+        return <span>&#8377;{row.prodId.ptr}</span>;
       },
     },
     {
@@ -91,7 +91,8 @@ function Order() {
       text: "Total Amount",
       sort: true,
       formatter: (cell, row) => {
-        return <span>&#8377;{row.prodId.mrp * row.qty}</span>;
+        console.log("hello",row)
+        return <span>&#8377;{row.prodId.ptr * row.qty}</span>;
       },
     },
   ];
